@@ -12,8 +12,41 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { Sequelize, DataTypes } from 'sequelize';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: './db.sqlite',
+});
+const User = sequelize.define('User', {
+  username: DataTypes.STRING,
+  birthday: DataTypes.DATE,
+});
+
+const test = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+  await User.sync({});
+
+  try {
+    await User.create({
+      username: 'janedoe2',
+      birthday: new Date(1980, 6, 20),
+    });
+  } catch (Err) {
+    console.log('에러남', Err);
+  }
+  const users = await User.findAll();
+  console.log('users:', users.length);
+};
+
+test();
 
 class AppUpdater {
   constructor() {
