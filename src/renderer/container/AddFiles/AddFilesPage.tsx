@@ -1,36 +1,45 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useToggle } from 'react-use';
 import { useElectronStore } from '../../utils/hooks/useStore';
+
+import './a.css';
+
+const LoadingSpinner = () => <div className="spinner"></div>;
 
 interface IAddFilesPageProps {}
 
-const AddFilesPage = ({}: IAddFilesPageProps) => {
-  const [savePath, setSavePath] = useElectronStore<string>('SAVE_PATH', '');
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      acceptedFiles.forEach(async (file) => {
-        const a = await window.electron.ipcRenderer.invoke('addNewFiles', {
-          email: '',
-          active: false,
-          age: 11,
-          createdAt: new Date(),
-        });
+const useAddFiles = () => {
+  const [savePath] = useElectronStore<string>('SAVE_PATH', '');
+  const [isLoading, setIsLoading] = useToggle(false);
 
-        console.log(a);
-      });
-    },
+  const onHandleDrop = async (files: File[]) => {
+    setIsLoading(true);
+    const result = await window.electron.ipcRenderer.invoke('addNewFiles', {
+      sourceFiles: files.map((v) => ({
+        path: v.path,
+        fileName: v.name,
+      })),
+      storePath: savePath,
+    });
+
+    if (!result.success) alert('fail');
+
+    setIsLoading(false);
+  };
+
+  return { isLoading, onHandleDrop };
+};
+
+const AddFilesPage = ({}: IAddFilesPageProps) => {
+  const { isLoading, onHandleDrop } = useAddFiles();
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: onHandleDrop,
   });
 
   return (
     <div>
-      <p>현재 저장 경로는 {savePath}입니다.</p>
-      <input
-        value={savePath}
-        onChange={(event) => {
-          setSavePath(event.target.value);
-        }}
-      ></input>
-
+      {isLoading && <LoadingSpinner />}
       <div {...getRootProps()}>
         <input {...getInputProps()} />
         {isDragActive ? (
