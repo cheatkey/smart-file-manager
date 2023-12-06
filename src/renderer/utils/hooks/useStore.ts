@@ -17,5 +17,5 @@ export const useElectronStore = <T>(key: KeyType, defaultValue: T) => {
     store.set(key, payload);
   };
 
-  return [state, setState];
+  return [state, setState] as [T, (payload: T) => void];
 };

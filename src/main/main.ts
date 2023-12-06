@@ -49,6 +49,10 @@ const test = async () => {
 
 test();
 
+ipcMain.on('call-main-function', (event, arg) => {
+  console.log(arg); // 출력: "Hello from Renderer"
+  event.reply('main-function-response', 'Hello from Main');
+});
 const electronStore = new Store();
 ipcMain.on('electron-store-get', async (event, val) => {
   event.returnValue = electronStore.get(val);

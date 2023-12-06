@@ -9,6 +9,9 @@ const AddFilesPage = ({}: IAddFilesPageProps) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
       acceptedFiles.forEach((file) => {
+        window.electron.ipcRenderer.sendMessage('call-main-function', [
+          file.path,
+        ]);
         console.log(file.path);
       });
     },
