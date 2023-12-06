@@ -98,9 +98,11 @@
   "dependencies": {
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
+    "electron-store": "^8.1.0",
     "electron-updater": "^6.1.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-router-dom": "^6.16.0",
     "sequelize": "^6.35.1",
     "sqlite3": "^5.1.6"

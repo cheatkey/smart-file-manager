@@ -13,6 +13,7 @@ import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { Sequelize, DataTypes } from 'sequelize';
+import Store from 'electron-store';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
@@ -47,6 +48,17 @@ const test = async () => {
 };
 
 test();
+
+const electronStore = new Store();
+ipcMain.on('electron-store-get', async (event, val) => {
+  event.returnValue = electronStore.get(val);
+});
+ipcMain.on('electron-store-has', async (event, val) => {
+  event.returnValue = electronStore.has(val);
+});
+ipcMain.on('electron-store-set', async (event, key, val) => {
+  electronStore.set(key, val);
+});
 
 class AppUpdater {
   constructor() {
