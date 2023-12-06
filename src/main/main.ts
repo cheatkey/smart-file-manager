@@ -12,43 +12,90 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import { Sequelize, DataTypes } from 'sequelize';
 import Store from 'electron-store';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { ipcController } from './ipcController';
+import './database';
+// eslint-disable-next-line import/order
+import {
+  Sequelize,
+  Model,
+  DataTypes,
+  Optional,
+  BelongsToManyAddAssociationMixin,
+  HasManyGetAssociationsMixin,
+  BelongsToGetAssociationMixin,
+  HasOneGetAssociationMixin,
+} from 'sequelize';
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: './db.sqlite',
 });
-const User = sequelize.define('User', {
-  username: DataTypes.STRING,
-  birthday: DataTypes.DATE,
+export const FileA = sequelize.define('FileA', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  storedName: DataTypes.STRING,
+  createdAt: DataTypes.DATE,
+  fileName: DataTypes.STRING,
+  metadata: DataTypes.STRING,
+  memo: DataTypes.STRING,
 });
 
-const test = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-  await User.sync({});
+export const Tag = sequelize.define('Tag', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  tagName: DataTypes.STRING,
+});
 
-  try {
-    await User.create({
-      username: 'janedoe2',
-      birthday: new Date(1980, 6, 20),
-    });
-  } catch (Err) {
-    console.log('에러남', Err);
-  }
-  const users = await User.findAll();
-  console.log('users:', users.length);
-};
+const Thumbnail = sequelize.define('Thumbnail', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  image: DataTypes.STRING,
+});
 
-test();
+const Group = sequelize.define('Group', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  groupName: DataTypes.STRING,
+});
+
+const History = sequelize.define('History', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  historyName: DataTypes.STRING,
+  version: DataTypes.INTEGER,
+});
+
+FileA.belongsToMany(Tag, { through: 'GameTeam' });
+Tag.belongsToMany(FileA, { through: 'GameTeam' });
+
+FileA.hasMany(Thumbnail);
+Thumbnail.belongsTo(FileA);
+
+Group.hasMany(FileA);
+FileA.belongsTo(Group);
+
+FileA.hasOne(History);
+History.belongsTo(FileA);
+
+sequelize.sync({ force: true });
 
 const electronStore = new Store();
 ipcMain.on('electron-store-get', async (event, val) => {

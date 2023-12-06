@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import fs from 'fs';
-import { getFileHash } from './utils';
+import { Repository } from './repository';
+
+const { nanoid } = require('nanoid');
 
 const ipcFunction = <T extends z.ZodObject<any>, S>(
   inputValidator: T,
@@ -22,6 +24,8 @@ const ipcFunction = <T extends z.ZodObject<any>, S>(
   };
 };
 
+const repository = new Repository();
+
 export const ipcController = {
   addNewFiles: ipcFunction(
     z.object({
@@ -36,21 +40,25 @@ export const ipcController = {
     async (input) => {
       const a = await Promise.all(
         input.sourceFiles.map(async ({ path, fileName }) => {
-          const startTime = new Date();
-
+          const s = new Date();
           const extension = fileName.split('.').at(-1);
 
-          const afterFileName = `${await getFileHash(path)}.${extension}`;
+          const afterFileName = `${nanoid()}.${extension}`;
+
+          await repository.createFile({
+            storedName: afterFileName,
+            fileName,
+            tags: ['test'],
+            memo: '메모장',
+          });
+
           await fs.promises.copyFile(
             path,
             `${input.storePath}/${afterFileName}`,
           );
           await fs.promises.unlink(path);
-          const endTime = new Date();
-
-          const elapsedTime = (endTime - startTime) / 1000; // 밀리초를 초로 변환
-
-          console.log(`myFunction took ${elapsedTime} seconds to execute`);
+          const e = new Date();
+          console.log('실행시간', (e - s) / 1000);
         }),
       );
     },

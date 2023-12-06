@@ -105,7 +105,7 @@
     "react-dropzone": "^14.2.3",
     "react-router-dom": "^6.16.0",
     "react-use": "^17.4.2",
-    "sequelize": "^6.35.1",
+    "sequelize": "6.22.0",
     "sqlite3": "^5.1.6",
     "zod": "^3.22.4"
   },
