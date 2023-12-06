@@ -1,8 +1,10 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { IPC_CONTROLLER_TYPE } from './ipcController';
 
 export type Channels = 'ipc-example' | 'call-main-function';
+
 const electronHandler = {
   store: {
     has(key: string) {
@@ -32,6 +34,13 @@ const electronHandler = {
     },
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
+    },
+
+    invoke: <ChannelType extends keyof IPC_CONTROLLER_TYPE>(
+      channel: ChannelType,
+      args: Parameters<IPC_CONTROLLER_TYPE[ChannelType]>[0],
+    ): Promise<ReturnType<IPC_CONTROLLER_TYPE[ChannelType]>> => {
+      return ipcRenderer.invoke(channel, args);
     },
   },
 };

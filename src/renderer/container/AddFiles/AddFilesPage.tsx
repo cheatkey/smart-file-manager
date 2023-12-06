@@ -8,11 +8,15 @@ const AddFilesPage = ({}: IAddFilesPageProps) => {
   const [savePath, setSavePath] = useElectronStore<string>('SAVE_PATH', '');
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
-      acceptedFiles.forEach((file) => {
-        window.electron.ipcRenderer.sendMessage('call-main-function', [
-          file.path,
-        ]);
-        console.log(file.path);
+      acceptedFiles.forEach(async (file) => {
+        const a = await window.electron.ipcRenderer.invoke('addNewFiles', {
+          email: '',
+          active: false,
+          age: 11,
+          createdAt: new Date(),
+        });
+
+        console.log(a);
       });
     },
   });

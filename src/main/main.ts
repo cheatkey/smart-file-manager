@@ -16,6 +16,7 @@ import { Sequelize, DataTypes } from 'sequelize';
 import Store from 'electron-store';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { ipcController } from './ipcController';
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
@@ -49,10 +50,6 @@ const test = async () => {
 
 test();
 
-ipcMain.on('call-main-function', (event, arg) => {
-  console.log(arg); // 출력: "Hello from Renderer"
-  event.reply('main-function-response', 'Hello from Main');
-});
 const electronStore = new Store();
 ipcMain.on('electron-store-get', async (event, val) => {
   event.returnValue = electronStore.get(val);
@@ -62,6 +59,12 @@ ipcMain.on('electron-store-has', async (event, val) => {
 });
 ipcMain.on('electron-store-set', async (event, key, val) => {
   electronStore.set(key, val);
+});
+
+Object.entries(ipcController).forEach(([key, func]) => {
+  ipcMain.handle(key, (event, args) => {
+    return func(args);
+  });
 });
 
 class AppUpdater {
