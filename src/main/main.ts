@@ -16,86 +16,9 @@ import Store from 'electron-store';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { ipcController } from './ipcController';
-import './database';
+import { test } from './database';
+test();
 // eslint-disable-next-line import/order
-import {
-  Sequelize,
-  Model,
-  DataTypes,
-  Optional,
-  BelongsToManyAddAssociationMixin,
-  HasManyGetAssociationsMixin,
-  BelongsToGetAssociationMixin,
-  HasOneGetAssociationMixin,
-} from 'sequelize';
-
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './db.sqlite',
-});
-export const FileA = sequelize.define('FileA', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  storedName: DataTypes.STRING,
-  createdAt: DataTypes.DATE,
-  fileName: DataTypes.STRING,
-  metadata: DataTypes.STRING,
-  memo: DataTypes.STRING,
-});
-
-export const Tag = sequelize.define('Tag', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  tagName: DataTypes.STRING,
-});
-
-const Thumbnail = sequelize.define('Thumbnail', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  image: DataTypes.STRING,
-});
-
-const Group = sequelize.define('Group', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  groupName: DataTypes.STRING,
-});
-
-const History = sequelize.define('History', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  historyName: DataTypes.STRING,
-  version: DataTypes.INTEGER,
-});
-
-FileA.belongsToMany(Tag, { through: 'GameTeam' });
-Tag.belongsToMany(FileA, { through: 'GameTeam' });
-
-FileA.hasMany(Thumbnail);
-Thumbnail.belongsTo(FileA);
-
-Group.hasMany(FileA);
-FileA.belongsTo(Group);
-
-FileA.hasOne(History);
-History.belongsTo(FileA);
-
-sequelize.sync({ force: true });
 
 const electronStore = new Store();
 ipcMain.on('electron-store-get', async (event, val) => {
