@@ -32,10 +32,10 @@ model Tag {
 }
 
 model Thumbnail {
-  id     Int    @id @default(autoincrement())
-  image  String
-  file   File   @relation(fields: [fileId], references: [id])
-  fileId Int
+  id        Int    @id @default(autoincrement())
+  imagePath String
+  file      File   @relation(fields: [fileId], references: [id])
+  fileId    Int
 }
 
 model Group {

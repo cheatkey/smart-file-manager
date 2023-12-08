@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useToggle } from 'react-use';
 import { useElectronStore } from '../../utils/hooks/useStore';
@@ -10,8 +10,16 @@ const LoadingSpinner = () => <div className="spinner"></div>;
 interface IAddFilesPageProps {}
 
 const useAddFiles = () => {
-  const [savePath] = useElectronStore<string>('SAVE_PATH', '');
+  const [savePath, setSavePath] = useElectronStore<string>('SAVE_PATH', '');
+  const [thumbnailPath, setThumbnailPath] = useElectronStore<string>(
+    'THUMBNAIL_PATH',
+    '',
+  );
   const [isLoading, setIsLoading] = useToggle(false);
+  useEffect(() => {
+    setSavePath('/media/cheat/새 볼륨/explorer/files');
+    setThumbnailPath('/media/cheat/새 볼륨/explorer/thumbnails');
+  }, []);
 
   const onHandleDrop = async (files: File[]) => {
     setIsLoading(true);

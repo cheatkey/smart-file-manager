@@ -13,13 +13,12 @@ import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import Store from 'electron-store';
-import { PrismaClient } from '@prisma/client';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { ipcController } from './ipcController';
+import { testDB } from './database';
 
-const prisma = new PrismaClient();
-
+testDB();
 // eslint-disable-next-line import/order
 
 const electronStore = new Store();

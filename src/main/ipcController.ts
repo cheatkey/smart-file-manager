@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import fs from 'fs';
-import { Repository } from './repository';
 
 const { nanoid } = require('nanoid');
 
@@ -23,8 +22,6 @@ const ipcFunction = <T extends z.ZodObject<any>, S>(
     };
   };
 };
-
-const repository = new Repository();
 
 export const ipcController = {
   addNewFiles: ipcFunction(

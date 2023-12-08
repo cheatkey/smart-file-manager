@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-type KeyType = 'SAVE_PATH' | '';
+type KeyType = 'SAVE_PATH' | 'THUMBNAIL_PATH';
 
 const getState = <T>(key: KeyType, defaultValue: T) => {
   const store = window.electron.store;
