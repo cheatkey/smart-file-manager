@@ -23,6 +23,8 @@ module.exports = {
     'max-classes-per-file': 'off',
     'lines-between-class-members': 'off',
     'no-restricted-syntax': 'off',
+    'no-use-before-define': 'off',
+    'no-new': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,
