@@ -23,6 +23,8 @@ model File {
   tags       Tag[]
   history    History?    @relation(fields: [historyId], references: [id])
   historyId  Int?
+  extension  String
+  fileSize   Int
 }
 
 model Tag {
