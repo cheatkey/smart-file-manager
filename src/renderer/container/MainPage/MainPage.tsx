@@ -8,6 +8,13 @@ import DragDropUploader from './components/DragDropUploader/DragDropUploader';
 interface IAddFilesPageProps {}
 
 const MainPage = ({}: IAddFilesPageProps) => {
+  useEffect(() => {
+    const main = async () => {
+      console.log(await window.electron.ipcRenderer.invoke('getAllFiles', {}));
+    };
+    main();
+  }, []);
+
   return (
     <DragDropUploader>
       <div>hello</div>

@@ -30,6 +30,7 @@ export const ipcController = {
   getTagList: ipcFunction(z.object({}), async (input) =>
     repository.getAllTagList(),
   ),
+  getAllFiles: ipcFunction(z.object({}), async () => repository.getAllFiles()),
 
   addNewFiles: ipcFunction(
     z.object({
@@ -74,13 +75,15 @@ export const ipcController = {
             for await (const thumbnailFileItem of item.thumbnails) {
               const fileName = nanoid();
               const thumbnailExt = thumbnailFileItem.fileName.split('.').at(-1);
+              const thumbnailAfterFileName = `${fileName}.${thumbnailExt}`;
+
               await moveAndDeleteFile({
                 originalPath: thumbnailFileItem.path,
                 moveTargetPath: thumbnailPath,
-                afterFileName: `${fileName}.${thumbnailExt}`,
+                afterFileName: thumbnailAfterFileName,
               });
 
-              thumbnailFileList.push(fileName);
+              thumbnailFileList.push(thumbnailAfterFileName);
             }
           }
 

@@ -16,9 +16,7 @@ import Store from 'electron-store';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { ipcController } from './ipcController';
-import { testDB } from './database';
 
-testDB();
 // eslint-disable-next-line import/order
 
 export type ElectronStoreKeyType = 'SAVE_PATH' | 'THUMBNAIL_PATH';

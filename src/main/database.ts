@@ -17,6 +17,8 @@ export const repository = {
     });
   },
 
+  getAllFiles: () => prisma.file.findMany({}),
+
   createFile: async (
     payload: FileModelDataType & {
       connect: {
@@ -78,27 +80,3 @@ type FileModelDataType = Pick<
   | 'extension'
   | 'fileSize'
 >;
-
-export const testDB = async () => {
-  const tag1 = await repository.createTag('테스트 태그');
-  const tag2 = await repository.createTag('테스트 태그2');
-
-  const tags = await repository.getAllTagList();
-
-  console.log(
-    'tagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstagstags',
-    await repository.createFile({
-      createdAt: new Date(),
-      memo: '메모',
-      metadata: '{}',
-      fileName: 'hello world',
-      storedName: '저장',
-
-      extension: '.mp4',
-      fileSize: 1,
-      connect: {
-        tags: [tag1.id, tag2.id],
-      },
-    }),
-  );
-};
