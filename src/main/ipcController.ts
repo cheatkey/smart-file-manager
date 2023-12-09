@@ -3,6 +3,8 @@ import fs from 'fs';
 import { repository } from './database';
 // eslint-disable-next-line import/no-cycle
 import { ElectronStoreKeyType, electronStore } from './main';
+import { omit } from 'lodash';
+import path from 'path';
 
 const { nanoid } = require('nanoid');
 
@@ -26,11 +28,37 @@ const ipcFunction = <T extends z.ZodObject<any>, S>(
   };
 };
 
+const getBase64Image = (imgPath: string) => {
+  const bitmap = fs.readFileSync(path.resolve(imgPath));
+  const ext = path.extname(imgPath).substring(1);
+
+  const mimeType = (() => {
+    if (ext === 'png') return 'image/png';
+    if (ext === 'gif') return 'image/gif';
+    return 'image/jpeg';
+  })();
+
+  return `data:${mimeType};base64,${Buffer.from(bitmap).toString('base64')}`;
+};
+
 export const ipcController = {
   getTagList: ipcFunction(z.object({}), async (input) =>
     repository.getAllTagList(),
   ),
-  getAllFiles: ipcFunction(z.object({}), async () => repository.getAllFiles()),
+  getAllFiles: ipcFunction(z.object({}), async () => {
+    const files = await repository.getAllFiles();
+
+    const thumbnailPath = electronStore.get(
+      'THUMBNAIL_PATH' as ElectronStoreKeyType,
+    ) as string;
+
+    return files.map((v) => ({
+      ...omit(v, 'thumbnails'),
+      thumbnails: (JSON.parse(v.thumbnails ?? '[]') as string[]).map(
+        (fileName) => getBase64Image(`${thumbnailPath}/${fileName}`),
+      ),
+    }));
+  }),
 
   addNewFiles: ipcFunction(
     z.object({

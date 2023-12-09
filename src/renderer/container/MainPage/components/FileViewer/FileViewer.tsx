@@ -1,36 +1,49 @@
 import React, { useRef } from 'react';
 import { useHoverDirty } from 'react-use';
-import { CardFotterIcon } from '../../../../assets/Icon';
+import { CardFotterIcon, FileIcon } from '../../../../assets/Icon';
 import { useElectronStore } from '../../../../utils/hooks/useStore';
+import {
+  FileExtensionBackground,
+  ImageBackgroundBackground,
+} from './FileBackground';
 
 interface IFileViewerProps {
   thumbnails: string[];
   fileName: string;
+  extension: string;
   lastOpen?: Date;
 }
 
-const FileViewer = ({ thumbnails, fileName, lastOpen }: IFileViewerProps) => {
-  console.log('thumbnails:', thumbnails);
+const FileViewer = ({
+  thumbnails,
+  fileName,
+  extension,
+  lastOpen,
+}: IFileViewerProps) => {
+  const hasThumbnail = thumbnails.length > 0;
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const isHovering = useHoverDirty(wrapperRef);
-  const [thumbnailPath] = useElectronStore('THUMBNAIL_PATH', '');
+  const isHover = useHoverDirty(wrapperRef);
 
   return (
     <div
       ref={wrapperRef}
-      className="w-full h-full relative overflow-hidden rounded-xl"
+      className={`w-full h-full relative overflow-hidden rounded-xl ${
+        hasThumbnail === false ? 'bg-stone-100' : ''
+      }`}
       style={{
         boxShadow: 'rgba(0, 0, 0, 0.1) 0px 1px 4px',
       }}
     >
-      <img
-        className={`w-full h-full object-cover transition-transform ${
-          isHovering && 'scale-105'
-        }`}
-        alt="thumbnail"
-        src={`${thumbnailPath}/${thumbnails[0]}`}
-      ></img>
-
+      {hasThumbnail ? (
+        <ImageBackgroundBackground
+          isHover={isHover}
+          thumbnail={thumbnails[0]}
+        />
+      ) : (
+        <p className="p-4">
+          <FileExtensionBackground extension={extension} />
+        </p>
+      )}
       <div
         className="absolute z-10 w-full h-16 border-t-2 border-stone-50/30"
         style={{

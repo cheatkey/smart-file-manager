@@ -10,7 +10,7 @@ interface IAddFilesPageProps {}
 
 const MainPage = ({}: IAddFilesPageProps) => {
   const fileList = useFileList();
-
+  console.log('fileList:', fileList);
   return (
     <DragDropUploader>
       <section className="p-6 w-full flex flex-col gap-3">
@@ -20,10 +20,13 @@ const MainPage = ({}: IAddFilesPageProps) => {
 
         <div className="grid grid-cols-3 gap-4 w-full">
           {fileList.data?.map((v, index) => (
-            <div className={`h-56 ${index % 2 === 0 ? 'col-span-2' : ''}`}>
+            <div
+              className={`h-56 ${[1, 2].includes(index) ? 'col-span-2' : ''}`}
+            >
               <FileViewer
-                thumbnails={!!v.thumbnails ? JSON.parse(v.thumbnails) : []}
+                thumbnails={v.thumbnails}
                 fileName={v.fileName}
+                extension={v.extension}
               />
             </div>
           ))}
