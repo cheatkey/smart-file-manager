@@ -19,14 +19,16 @@ export const repository = {
 
   createFile: async (
     payload: FileModelDataType & {
-      connect?: {
-        thumbnails?: string[];
+      connect: {
+        thumbnails: string[];
         group?: number;
         tags?: number[];
         history?: number;
       };
     },
   ) => {
+    const hasThumbnails = (payload.connect.thumbnails ?? []).length > 0;
+
     return prisma.file.create({
       data: {
         ...pick(payload, [
@@ -35,12 +37,12 @@ export const repository = {
           'fileName',
           'metadata',
           'memo',
+          'extension',
+          'fileSize',
         ]),
-        thumbnails: {
-          create: (payload.connect?.thumbnails ?? []).map((v) => ({
-            imagePath: v,
-          })),
-        },
+        thumbnails: hasThumbnails
+          ? JSON.stringify(payload.connect.thumbnails)
+          : '[]',
         group:
           payload.connect?.group !== undefined
             ? {
@@ -68,7 +70,13 @@ export const repository = {
 
 type FileModelDataType = Pick<
   Parameters<typeof prisma.file.create>[0]['data'],
-  'storedName' | 'createdAt' | 'fileName' | 'metadata' | 'memo'
+  | 'storedName'
+  | 'createdAt'
+  | 'fileName'
+  | 'metadata'
+  | 'memo'
+  | 'extension'
+  | 'fileSize'
 >;
 
 export const testDB = async () => {
@@ -85,6 +93,9 @@ export const testDB = async () => {
       metadata: '{}',
       fileName: 'hello world',
       storedName: '저장',
+
+      extension: '.mp4',
+      fileSize: 1,
       connect: {
         tags: [tag1.id, tag2.id],
       },

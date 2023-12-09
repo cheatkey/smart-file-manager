@@ -11,17 +11,17 @@ datasource db {
 }
 
 model File {
-  id         Int         @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   storedName String
   createdAt  DateTime
   fileName   String
   metadata   String
   memo       String
-  thumbnails Thumbnail[]
-  group      Group?      @relation(fields: [groupId], references: [id])
+  thumbnails String?
+  group      Group?   @relation(fields: [groupId], references: [id])
   groupId    Int?
   tags       Tag[]
-  history    History?    @relation(fields: [historyId], references: [id])
+  history    History? @relation(fields: [historyId], references: [id])
   historyId  Int?
   extension  String
   fileSize   Int
@@ -31,13 +31,6 @@ model Tag {
   id      Int    @id @default(autoincrement())
   tagName String
   files   File[]
-}
-
-model Thumbnail {
-  id        Int    @id @default(autoincrement())
-  imagePath String
-  file      File   @relation(fields: [fileId], references: [id])
-  fileId    Int
 }
 
 model Group {

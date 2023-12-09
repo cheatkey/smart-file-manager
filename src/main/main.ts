@@ -21,7 +21,9 @@ import { testDB } from './database';
 testDB();
 // eslint-disable-next-line import/order
 
-const electronStore = new Store();
+export type ElectronStoreKeyType = 'SAVE_PATH' | 'THUMBNAIL_PATH';
+
+export const electronStore = new Store();
 ipcMain.on('electron-store-get', async (event, val) => {
   event.returnValue = electronStore.get(val);
 });

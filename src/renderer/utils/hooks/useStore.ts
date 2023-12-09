@@ -1,14 +1,16 @@
 import { useState } from 'react';
+import { ElectronStoreKeyType } from '../../../main/main';
 
-type KeyType = 'SAVE_PATH' | 'THUMBNAIL_PATH';
-
-const getState = <T>(key: KeyType, defaultValue: T) => {
+const getState = <T>(key: ElectronStoreKeyType, defaultValue: T) => {
   const store = window.electron.store;
   if (store.has(key)) return store.get(key) as T;
   return defaultValue;
 };
 
-export const useElectronStore = <T>(key: KeyType, defaultValue: T) => {
+export const useElectronStore = <T>(
+  key: ElectronStoreKeyType,
+  defaultValue: T,
+) => {
   const store = window.electron.store;
   const [state, _setState] = useState<T>(() => getState(key, defaultValue));
 

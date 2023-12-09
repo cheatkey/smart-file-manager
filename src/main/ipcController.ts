@@ -1,5 +1,8 @@
 import { z } from 'zod';
 import fs from 'fs';
+import { repository } from './database';
+// eslint-disable-next-line import/no-cycle
+import { ElectronStoreKeyType, electronStore } from './main';
 
 const { nanoid } = require('nanoid');
 
@@ -24,42 +27,91 @@ const ipcFunction = <T extends z.ZodObject<any>, S>(
 };
 
 export const ipcController = {
+  getTagList: ipcFunction(z.object({}), async (input) =>
+    repository.getAllTagList(),
+  ),
+
   addNewFiles: ipcFunction(
     z.object({
-      sourceFiles: z.array(
+      files: z.array(
         z.object({
           path: z.string(),
           fileName: z.string(),
+          thumbnails: z.array(
+            z.object({
+              path: z.string(),
+              fileName: z.string(),
+            }),
+          ),
+          tags: z.array(z.string()),
         }),
       ),
-      storePath: z.string(),
     }),
+
     async (input) => {
-      const a = await Promise.all(
-        input.sourceFiles.map(async ({ path, fileName }) => {
-          const s = new Date();
-          const extension = fileName.split('.').at(-1);
-
+      return Promise.all(
+        input.files.map(async (item) => {
+          const extension = item.fileName.split('.').at(-1) ?? '';
           const afterFileName = `${nanoid()}.${extension}`;
+          const { size: fileSize } = await fs.promises.stat(item.path);
+          const savePath = electronStore.get(
+            'SAVE_PATH' as ElectronStoreKeyType,
+          ) as string;
 
-          await repository.createFile({
-            storedName: afterFileName,
-            fileName,
-            tags: ['test'],
-            memo: '메모장',
+          await moveAndDeleteFile({
+            originalPath: item.path,
+            moveTargetPath: savePath,
+            afterFileName,
           });
 
-          await fs.promises.copyFile(
-            path,
-            `${input.storePath}/${afterFileName}`,
-          );
-          await fs.promises.unlink(path);
-          const e = new Date();
-          console.log('실행시간', (e - s) / 1000);
+          const thumbnailPath = electronStore.get(
+            'THUMBNAIL_PATH' as ElectronStoreKeyType,
+          ) as string;
+
+          const thumbnailFileList: string[] = [];
+
+          if (item.thumbnails.length > 0) {
+            for await (const thumbnailFileItem of item.thumbnails) {
+              const fileName = nanoid();
+              const thumbnailExt = thumbnailFileItem.fileName.split('.').at(-1);
+              await moveAndDeleteFile({
+                originalPath: thumbnailFileItem.path,
+                moveTargetPath: thumbnailPath,
+                afterFileName: `${fileName}.${thumbnailExt}`,
+              });
+
+              thumbnailFileList.push(fileName);
+            }
+          }
+
+          return repository.createFile({
+            storedName: afterFileName,
+            createdAt: new Date(),
+            fileName: item.fileName,
+            metadata: '{}',
+            memo: '',
+            extension,
+            fileSize,
+            connect: {
+              thumbnails: thumbnailFileList,
+            },
+          });
         }),
       );
     },
   ),
+};
+
+const moveAndDeleteFile = async (props: {
+  originalPath: string;
+  moveTargetPath: string;
+  afterFileName: string;
+}) => {
+  await fs.promises.copyFile(
+    props.originalPath,
+    `${props.moveTargetPath}/${props.afterFileName}`,
+  );
+  await fs.promises.unlink(props.originalPath);
 };
 
 export type IPC_CONTROLLER_TYPE = typeof ipcController;

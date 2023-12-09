@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { useToggle } from 'react-use';
 import { Button, ButtonGroup } from '@nextui-org/react';
 import { useElectronStore } from '../../utils/hooks/useStore';
-import DragDropUploader from './components/DragDropUploader';
+import DragDropUploader from './components/DragDropUploader/DragDropUploader';
 
 interface IAddFilesPageProps {}
 
