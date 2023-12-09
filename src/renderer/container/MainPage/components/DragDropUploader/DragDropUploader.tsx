@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { useToggle } from 'react-use';
 import { nanoid } from 'nanoid';
 import { useElectronStore } from '../../../../utils/hooks/useStore';
-import { useUploadStore } from '../../store/useUploadStore';
+import { useUploadStore } from '../../hooks/store/useUploadStore';
 import UploadPage from './UploadPage';
 
 // const useAddFiles = () => {
@@ -60,19 +60,11 @@ const DragDropUploader = ({ children }: IDragDropUploaderProps) => {
 
   return (
     <div
-      className="flex flex-row relative"
+      className="flex flex-row relative min-h-screen w-full"
       {...getRootProps()}
-      style={{
-        minHeight: '100vh',
-      }}
     >
       {isDragActive && (
-        <div
-          className="backdrop-blur-sm absolute top-0 left-0 z-10 flex items-center justify-center"
-          style={{
-            minHeight: '100vh',
-          }}
-        >
+        <div className="min-h-screen min-w-full backdrop-blur-sm absolute top-0 left-0 z-10 flex items-center justify-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -86,7 +78,6 @@ const DragDropUploader = ({ children }: IDragDropUploaderProps) => {
         </div>
       )}
 
-      <p>{JSON.stringify(isDragActive)}</p>
       {children}
     </div>
   );

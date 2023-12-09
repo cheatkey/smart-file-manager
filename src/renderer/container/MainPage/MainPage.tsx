@@ -1,24 +1,34 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useToggle } from 'react-use';
 import { useElectronStore } from '../../utils/hooks/useStore';
 import DragDropUploader from './components/DragDropUploader/DragDropUploader';
+import FileViewer from './components/FileViewer/FileViewer';
+import { useFileList } from './hooks/query/useFileList';
 
 interface IAddFilesPageProps {}
 
 const MainPage = ({}: IAddFilesPageProps) => {
-  useEffect(() => {
-    const main = async () => {
-      console.log(await window.electron.ipcRenderer.invoke('getAllFiles', {}));
-    };
-    main();
-  }, []);
+  const fileList = useFileList();
 
   return (
     <DragDropUploader>
-      <button type="button" className="btn">
-        Button
-      </button>
+      <section className="p-6 w-full flex flex-col gap-3">
+        <h1 className="font-bold text-2xl tracking-tight text-stone-800">
+          추천 파일
+        </h1>
+
+        <div className="grid grid-cols-3 gap-4 w-full">
+          {fileList.data?.map((v, index) => (
+            <div className={`h-56 ${index % 2 === 0 ? 'col-span-2' : ''}`}>
+              <FileViewer
+                thumbnails={!!v.thumbnails ? JSON.parse(v.thumbnails) : []}
+                fileName={v.fileName}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
     </DragDropUploader>
   );
 };

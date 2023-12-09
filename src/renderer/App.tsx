@@ -4,14 +4,13 @@ import Sidebar from './layout/Sidebar';
 
 const App = () => {
   return (
-    <>
+    <Router>
       <Sidebar />
-      <Router>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-        </Routes>
-      </Router>
-    </>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/history" element={<p>히ㅡㅌ리</p>} />
+      </Routes>
+    </Router>
   );
 };
 

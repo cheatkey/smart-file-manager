@@ -3,7 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import {
   useUploadStore,
   useUploadStoreSelector,
-} from '../../store/useUploadStore';
+} from '../../hooks/store/useUploadStore';
 
 interface IUploadPageProps {}
 

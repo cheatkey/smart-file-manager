@@ -1826,6 +1826,18 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
+"@tanstack/query-core@5.13.4":
+  version "5.13.4"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.13.4.tgz#50ecd3f721dfb0859528fbb8863268bee24145f0"
+  integrity sha512-8+rJucXvC/xlr4OrxHhEIob/cTlbT4fgmz1VsvB0D12FRStKaXeLORNGcOhSAynRd2NL74SV/Qq0IIb4DedLcA==
+
+"@tanstack/react-query@^5.13.4":
+  version "5.13.4"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.13.4.tgz#1a2b93a7319f3abd13461b5c5c7cf4eac369f567"
+  integrity sha512-3HjvkFFriEQwffUXtKHPiwkfFXUGbs46YATTzzyK1+Pw6Ekd3kwzS50e45qdamWuEXmXxyo5S1zp534LdFG0Rw==
+  dependencies:
+    "@tanstack/query-core" "5.13.4"
+
 "@teamsupercell/typings-for-css-modules-loader@^2.5.2":
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/@teamsupercell/typings-for-css-modules-loader/-/typings-for-css-modules-loader-2.5.2.tgz#b29deee5ebf6dac48693a2039a3b68b5ad821c1d"

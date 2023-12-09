@@ -1,18 +1,24 @@
 import { createRoot } from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import './index.css';
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
+
+const queryClient = new QueryClient();
+
 root.render(
-  <main
-    className="min-h-screen flex flex-row"
-    style={{
-      minHeight: '100vh',
-    }}
-  >
-    <App />
-  </main>,
+  <QueryClientProvider client={queryClient}>
+    <main
+      className="min-h-screen flex flex-row"
+      style={{
+        minHeight: '100vh',
+      }}
+    >
+      <App />
+    </main>
+  </QueryClientProvider>,
 );
 
 // calling IPC exposed from preload script
