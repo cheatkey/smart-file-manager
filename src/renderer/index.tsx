@@ -1,21 +1,18 @@
 import { createRoot } from 'react-dom/client';
-import { NextUIProvider } from '@nextui-org/react';
 import App from './App';
 import './index.css';
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
 root.render(
-  <NextUIProvider>
-    <main
-      className="dark text-foreground bg-background"
-      style={{
-        minHeight: '100vh',
-      }}
-    >
-      <App />
-    </main>
-  </NextUIProvider>,
+  <main
+    className="min-h-screen flex flex-row"
+    style={{
+      minHeight: '100vh',
+    }}
+  >
+    <App />
+  </main>,
 );
 
 // calling IPC exposed from preload script

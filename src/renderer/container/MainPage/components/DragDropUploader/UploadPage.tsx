@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Button, Select, SelectItem } from '@nextui-org/react';
 import {
   useUploadStore,
   useUploadStoreSelector,
@@ -67,25 +66,13 @@ const UploadPage = ({}: IUploadPageProps) => {
           {selectedFile?.thumbnails.map((v) => <p>{v.fileName}</p>)}
         </div>
 
-        {/* <Select
-          label="Favorite Animal"
-          placeholder="Select an animal"
-          selectionMode="multiple"
-          className="max-w-xs"
-        >
-          {tagList.map((item) => (
-            <SelectItem key={item} value={item}>
-              {item}
-            </SelectItem>
-          ))}
-        </Select> */}
-        <Button
+        <button
           onClick={() => {
             addFiles();
           }}
         >
           파일 추가하기
-        </Button>
+        </button>
       </div>
     </div>
   );

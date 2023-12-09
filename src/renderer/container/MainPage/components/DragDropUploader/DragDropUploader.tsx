@@ -64,14 +64,12 @@ const DragDropUploader = ({ children }: IDragDropUploaderProps) => {
       {...getRootProps()}
       style={{
         minHeight: '100vh',
-        minWidth: '100vw',
       }}
     >
       {isDragActive && (
         <div
           className="backdrop-blur-sm absolute top-0 left-0 z-10 flex items-center justify-center"
           style={{
-            minWidth: '100%',
             minHeight: '100vh',
           }}
         >

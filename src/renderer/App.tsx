@@ -1,12 +1,18 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import MainPage from './container/MainPage/MainPage';
+import Sidebar from './layout/Sidebar';
 
-export default function App() {
+const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-      </Routes>
-    </Router>
+    <>
+      <Sidebar />
+      <Router>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+        </Routes>
+      </Router>
+    </>
   );
-}
+};
+
+export default App;
