@@ -6,8 +6,10 @@ import {
   FileExtensionBackground,
   ImageBackgroundBackground,
 } from './FileBackground';
+import { useClickHandler } from './hooks/useClickHandler';
 
 interface IFileViewerProps {
+  id: number;
   thumbnails: string[];
   fileName: string;
   extension: string;
@@ -15,6 +17,7 @@ interface IFileViewerProps {
 }
 
 const FileViewer = ({
+  id,
   thumbnails,
   fileName,
   extension,
@@ -23,9 +26,19 @@ const FileViewer = ({
   const hasThumbnail = thumbnails.length > 0;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isHover = useHoverDirty(wrapperRef);
+  const { handleClick, handleDoubleClick } = useClickHandler({
+    click: () => {
+      window.electron.ipcRenderer.invoke('openFile', {
+        id,
+      });
+    },
+    doubleClick: () => {},
+  });
 
   return (
     <div
+      onDoubleClick={handleDoubleClick}
+      onClick={handleClick}
       ref={wrapperRef}
       className={`w-full h-full relative overflow-hidden rounded-xl ${
         hasThumbnail === false ? 'bg-stone-100' : ''
@@ -41,7 +54,7 @@ const FileViewer = ({
         />
       ) : (
         <p className="p-4">
-          <FileExtensionBackground extension={extension} />
+          <FileExtensionBackground extension={extension} isHover={isHover} />
         </p>
       )}
       <div

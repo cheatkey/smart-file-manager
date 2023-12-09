@@ -18,14 +18,35 @@ export const ImageBackgroundBackground = ({
 );
 
 export const FileExtensionBackground = ({
+  isHover,
   extension,
 }: {
+  isHover: boolean;
   extension: string;
 }) => {
   const lowerExtension = extension.toLowerCase();
-  if (['csv', 'xlsx'].includes(lowerExtension)) return <FileIcon.Excel />;
-  if (['ppt'].includes(lowerExtension)) return <FileIcon.Ppt />;
-  if (['docs'].includes(lowerExtension)) return <FileIcon.Word />;
-  if (['jpg', 'png', 'gif', 'jpeg'].includes(lowerExtension))
-    return <FileIcon.Image />;
+
+  const IconElement = (() => {
+    if (['csv', 'xlsx'].includes(lowerExtension)) return FileIcon.Excel;
+    if (['ppt'].includes(lowerExtension)) return FileIcon.Ppt;
+    if (['docs'].includes(lowerExtension)) return FileIcon.Word;
+    if (['jpg', 'png', 'gif', 'jpeg'].includes(lowerExtension))
+      return FileIcon.Image;
+  })();
+
+  if (IconElement)
+    return (
+      <div
+        className="transition-transform"
+        style={
+          isHover
+            ? {
+                transform: 'translateX(0.5%) scale(1.03)',
+              }
+            : {}
+        }
+      >
+        <IconElement />
+      </div>
+    );
 };

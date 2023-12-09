@@ -24,6 +24,7 @@ const MainPage = ({}: IAddFilesPageProps) => {
               className={`h-56 ${[1, 2].includes(index) ? 'col-span-2' : ''}`}
             >
               <FileViewer
+                id={v.id}
                 thumbnails={v.thumbnails}
                 fileName={v.fileName}
                 extension={v.extension}

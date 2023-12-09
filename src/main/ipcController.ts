@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import fs from 'fs';
-import { repository } from './database';
-// eslint-disable-next-line import/no-cycle
-import { ElectronStoreKeyType, electronStore } from './main';
 import { omit } from 'lodash';
 import path from 'path';
+import open from 'open';
+import { repository } from './database';
+import { ElectronStoreKeyType, electronStore } from './main';
 
 const { nanoid } = require('nanoid');
 
@@ -123,12 +123,31 @@ export const ipcController = {
             memo: '',
             extension,
             fileSize,
+            rating: 5,
             connect: {
               thumbnails: thumbnailFileList,
             },
           });
         }),
       );
+    },
+  ),
+
+  openFile: ipcFunction(
+    z.object({
+      id: z.number(),
+    }),
+    async (input) => {
+      await repository.addFileOpenActivity(input.id);
+      const file = await repository.getFile(input.id);
+
+      const savePath = electronStore.get(
+        'SAVE_PATH' as ElectronStoreKeyType,
+      ) as string;
+
+      if (!file) throw new Error();
+
+      open(`${savePath}/${file.storedName}`);
     },
   ),
 };

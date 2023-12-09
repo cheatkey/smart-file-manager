@@ -4,6 +4,40 @@ import pick from 'lodash/pick';
 const prisma = new PrismaClient();
 
 export const repository = {
+  addFileOpenActivity: async (fileID: number) => {
+    const openActivity = await prisma.activity.create({
+      data: {
+        date: new Date(),
+        content: 'open',
+      },
+    });
+
+    return prisma.file.update({
+      where: {
+        id: fileID,
+      },
+      data: {
+        activity: {
+          connect: {
+            id: openActivity.id,
+          },
+        },
+      },
+    });
+  },
+
+  getFile: async (fileID: number) =>
+    prisma.file.findUnique({
+      where: {
+        id: fileID,
+      },
+      include: {
+        group: true,
+        history: true,
+        activity: true,
+      },
+    }),
+
   getAllTagList: async () => {
     const tags = await prisma.tag.findMany();
     return [...new Set(tags.map((tag) => tag.tagName))];
@@ -41,6 +75,7 @@ export const repository = {
           'memo',
           'extension',
           'fileSize',
+          'rating',
         ]),
         thumbnails: hasThumbnails
           ? JSON.stringify(payload.connect.thumbnails)
@@ -79,4 +114,5 @@ type FileModelDataType = Pick<
   | 'memo'
   | 'extension'
   | 'fileSize'
+  | 'rating'
 >;
