@@ -47,6 +47,7 @@ export const repository = {
         group: true,
         history: true,
         activity: true,
+        tags: true,
       },
     }),
 
@@ -73,7 +74,10 @@ export const repository = {
       connect: {
         thumbnails?: string[];
         group?: number;
-        tags?: number[];
+        tags?: {
+          connect: number[];
+          disconnect: number[];
+        };
         history?: number;
       };
     },
@@ -94,7 +98,8 @@ export const repository = {
 
     if (!isNil(payload.connect.tags)) {
       queryData.data.tags = {
-        connect: payload.connect.tags.map((v) => ({ id: v })),
+        connect: payload.connect.tags.connect.map((v) => ({ id: v })),
+        disconnect: payload.connect.tags.disconnect.map((v) => ({ id: v })),
       };
     }
     if (!isNil(payload.connect.history)) {

@@ -6,6 +6,9 @@ import { useSelectedFileViewer } from './hooks/store/useSelectedFileViewer';
 import { useFileInfo } from './hooks/query/useFileInfo';
 import { DrawerIcon } from '../../assets/Icon';
 import ThumbnailRenderer from './components/ThumbnailRender';
+import DebouncedTextarea from './components/DebouncedTextarea';
+import { toast } from 'react-hot-toast';
+import TagSelector from './components/TagSelector';
 
 const iconWrapper =
   'w-11 h-11 bg-stone-800 rounded-2xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform';
@@ -26,6 +29,7 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
           fileName: v.name,
         })),
       ),
+    noClick: true,
   });
 
   if (!data)
@@ -75,6 +79,10 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
           <p className="font-bold text-xl">{data.fileName}</p>
           <p className="font-medium text-base">여기에는 뭘 쓰지</p>
           <Rating
+            initialValue={data.rating}
+            onClick={(value) => {
+              handler.setRating(value);
+            }}
             allowFraction
             transition
             SVGclassName="inline-block"
@@ -102,29 +110,25 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
 
         <section className="flex flex-col">
           <p className="font-semibold text-lg text-stone-100">태그</p>
-          <p className="font-medium text-base text-stone-200">
-            {data.memo.trim().length === 0
-              ? '기록된 메모가 없습니다'
-              : data.memo}
-          </p>
+          <TagSelector
+            initialValue={data.tags}
+            handleChangeTags={handler.setTags}
+          />
         </section>
 
         <section className="flex flex-col">
           <p className="font-semibold text-lg text-stone-100">메타데이터</p>
-          <p className="font-medium text-base text-stone-200">
-            {data.memo.trim().length === 0
-              ? '기록된 메모가 없습니다'
-              : data.memo}
-          </p>
+          TODO
         </section>
 
         <section className="flex flex-col">
           <p className="font-semibold text-lg text-stone-100">메모</p>
-          <p className="font-medium text-base text-stone-200">
-            {data.memo.trim().length === 0
-              ? '기록된 메모가 없습니다'
-              : data.memo}
-          </p>
+          <DebouncedTextarea
+            initialValue={data.memo}
+            onDebouncedChange={(content) => {
+              handler.setMemo(content);
+            }}
+          />
         </section>
 
         <section className="flex flex-col">

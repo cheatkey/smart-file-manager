@@ -70,6 +70,14 @@ const moveThumbnailImage = async (
 };
 
 export const ipcController = {
+  addTag: ipcFunction(
+    z.object({
+      tagName: z.string(),
+    }),
+    async (input) => {
+      return repository.createTag(input.tagName);
+    },
+  ),
   updateFile: ipcFunction(
     z.object({
       id: z.number(),
@@ -98,17 +106,32 @@ export const ipcController = {
       }),
     }),
     async (input) => {
-      const tags = await (() => {
-        if (!isNil(input.payload.tags))
-          return repository.getTagsID(input.payload.tags);
+      const prevFileData = await repository.getFile(input.id);
+
+      const tags = await (async () => {
+        if (isNil(input.payload.tags)) return undefined;
+
+        const tagIDList = (await repository.getTagsID(input.payload.tags))
+          .map((v) => v?.id)
+          .filter((item) => isNil(item) === false) as number[];
+
+        const hasTagIDList = prevFileData?.tags.map((v) => v.id) ?? [];
+
+        return {
+          connect: tagIDList.filter(
+            (item) => hasTagIDList.includes(item) === false,
+          ),
+          disconnect: hasTagIDList.filter(
+            (item) => tagIDList.includes(item) === false,
+          ),
+        };
       })();
 
       const thumbnails = await (async () => {
         if (isNil(input.payload.thumbnails)) return;
-        const fileData = await repository.getFile(input.id);
 
         let thumbnailFileNames = JSON.parse(
-          fileData?.thumbnails ?? '[]',
+          prevFileData?.thumbnails ?? '[]',
         ) as string[];
 
         if (!isNil(input.payload.thumbnails.deleteIndex)) {
@@ -136,7 +159,7 @@ export const ipcController = {
         connect: {
           thumbnails,
           group: input.payload.group,
-          tags: tags?.map((v) => v!.id),
+          tags,
           history: input.payload.history,
         },
       });
@@ -171,7 +194,12 @@ export const ipcController = {
       ) as string;
 
       return {
-        ...omit(fileData, 'thumbnails'),
+        ...omit(fileData, ['thumbnails', 'rating']),
+        rating: (() => {
+          if (isNil(fileData) || isNil(fileData?.rating))
+            return fileData?.rating;
+          return fileData.rating / 2;
+        })(),
         thumbnails: (JSON.parse(fileData?.thumbnails ?? '[]') as string[]).map(
           (fileName) => getBase64Image(`${thumbnailPath}/${fileName}`),
         ),

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import isNil from 'lodash/isNil';
 import { queryKeys } from '../../../../utils/queryKeys';
+import toast from 'react-hot-toast';
 
 export const useFileInfo = (id: number | null) => {
   const queryClient = useQueryClient();
@@ -24,12 +25,34 @@ export const useFileInfo = (id: number | null) => {
   });
 
   const handler = {
+    setMemo: async (content: string) => {
+      await mutateAsync({
+        id,
+        payload: {
+          memo: content,
+        },
+      });
+
+      toast.success('메모 저장 완료');
+    },
+    setRating: async (rating: number) => {
+      const value = rating * 2;
+
+      await mutateAsync({
+        id,
+        payload: {
+          rating: value,
+        },
+      });
+
+      toast.success('점수 저장 완료');
+    },
     addThumbnail: async (
       acceptedFiles: { path: string; fileName: string }[],
     ) => {
       if (isNil(data)) return;
 
-      return mutateAsync({
+      await mutateAsync({
         id,
         payload: {
           thumbnails: {
@@ -37,11 +60,13 @@ export const useFileInfo = (id: number | null) => {
           },
         },
       });
+
+      toast.success('썸네일 업데이트 완료');
     },
     deleteThumbnail: async (deletedThumbnailIndex: number) => {
       if (isNil(data)) return;
 
-      return mutateAsync({
+      await mutateAsync({
         id,
         payload: {
           thumbnails: {
@@ -49,6 +74,18 @@ export const useFileInfo = (id: number | null) => {
           },
         },
       });
+
+      toast.success('썸네일 삭제 완료');
+    },
+    setTags: async (tagNames: string[]) => {
+      await mutateAsync({
+        id,
+        payload: {
+          tags: tagNames,
+        },
+      });
+
+      toast.success('태그 저장 완료');
     },
   };
 
