@@ -87,6 +87,21 @@ export const useFileInfo = (id: number | null) => {
 
       toast.success('태그 저장 완료');
     },
+    setMetadata: async (metadata: Record<string, string>) => {
+      await mutateAsync({
+        id,
+        payload: { metadata },
+      });
+
+      toast.success('메타 데이터 저장 완료');
+    },
+    removeFile: async () => {
+      if (isNil(id)) return;
+      await window.electron.ipcRenderer.invoke('removeFile', {
+        fileID: id,
+      });
+      toast.success('파일 삭제 완료');
+    },
   };
 
   return { data, handler };

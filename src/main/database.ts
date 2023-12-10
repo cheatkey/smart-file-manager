@@ -5,6 +5,14 @@ import pick from 'lodash/pick';
 const prisma = new PrismaClient();
 
 export const repository = {
+  removeFile: async (fileID: number) => {
+    return prisma.file.delete({
+      where: {
+        id: fileID,
+      },
+    });
+  },
+
   getTagsID: async (tagNames: string[]) =>
     Promise.all(
       tagNames.map((tagName) =>

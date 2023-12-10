@@ -33,14 +33,8 @@ const TagSelector = ({ initialValue, handleChangeTags }: ITagSelectorProps) => {
     });
   };
 
-  console.log(
-    'initialValue.map((v) => v.tagName)',
-    initialValue.map((v) => v.tagName),
-    allTagList?.map((v) => ({ label: v, value: v })),
-  );
-
   return (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row gap-2 items-center">
       <Select
         defaultValue={initialValue.map((v) => ({
           label: v.tagName,
@@ -56,9 +50,9 @@ const TagSelector = ({ initialValue, handleChangeTags }: ITagSelectorProps) => {
 
       <div
         onClick={callAddTagModal}
-        className="w-9 h-9 bg-stone-800 rounded-xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+        className="w-7 h-7 bg-stone-800 rounded-xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
       >
-        <DrawerIcon.Add />
+        <DrawerIcon.SmallAdd />
       </div>
     </div>
   );

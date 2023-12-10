@@ -41,12 +41,21 @@ const getBase64Image = (imgPath: string) => {
   return `data:${mimeType};base64,${Buffer.from(bitmap).toString('base64')}`;
 };
 
-const moveThumbnailImage = async (
-  thumbnailsPath: { path: string; fileName: string }[],
-) => {
+const getStorePath = () => {
   const thumbnailPath = electronStore.get(
     'THUMBNAIL_PATH' as ElectronStoreKeyType,
   ) as string;
+  const savePath = electronStore.get(
+    'SAVE_PATH' as ElectronStoreKeyType,
+  ) as string;
+
+  return { thumbnailPath, savePath };
+};
+
+const moveThumbnailImage = async (
+  thumbnailsPath: { path: string; fileName: string }[],
+) => {
+  const thumbnailPath = getStorePath().thumbnailPath;
 
   const thumbnailFileList: string[] = [];
 
@@ -153,7 +162,7 @@ export const ipcController = {
       return repository.updateFile(input.id, {
         fileName: input.payload.fileName,
         memo: input.payload.memo,
-        metadata: input.payload.metadata,
+        metadata: JSON.stringify(input.payload.metadata),
         rating: input.payload.rating,
 
         connect: {
@@ -171,9 +180,7 @@ export const ipcController = {
   getAllFiles: ipcFunction(z.object({}), async () => {
     const files = await repository.getAllFiles();
 
-    const thumbnailPath = electronStore.get(
-      'THUMBNAIL_PATH' as ElectronStoreKeyType,
-    ) as string;
+    const thumbnailPath = getStorePath().thumbnailPath;
 
     return files.map((v) => ({
       ...omit(v, 'thumbnails'),
@@ -189,9 +196,7 @@ export const ipcController = {
     async (input) => {
       const fileData = await repository.getFile(input.fileID);
 
-      const thumbnailPath = electronStore.get(
-        'THUMBNAIL_PATH' as ElectronStoreKeyType,
-      ) as string;
+      const thumbnailPath = getStorePath().thumbnailPath;
 
       return {
         ...omit(fileData, ['thumbnails', 'rating']),
@@ -229,9 +234,7 @@ export const ipcController = {
           const extension = item.fileName.split('.').at(-1) ?? '';
           const afterFileName = `${nanoid()}.${extension}`;
           const { size: fileSize } = await fs.promises.stat(item.path);
-          const savePath = electronStore.get(
-            'SAVE_PATH' as ElectronStoreKeyType,
-          ) as string;
+          const savePath = getStorePath().savePath;
 
           await moveAndDeleteFile({
             originalPath: item.path,
@@ -266,13 +269,34 @@ export const ipcController = {
       await repository.addFileOpenActivity(input.id);
       const file = await repository.getFile(input.id);
 
-      const savePath = electronStore.get(
-        'SAVE_PATH' as ElectronStoreKeyType,
-      ) as string;
+      const savePath = getStorePath().savePath;
 
       if (!file) throw new Error();
 
       open(`${savePath}/${file.storedName}`);
+    },
+  ),
+  removeFile: ipcFunction(
+    z.object({
+      fileID: z.number(),
+    }),
+    async (input) => {
+      const file = await repository.getFile(input.fileID);
+      if (!file) return;
+
+      const { thumbnailPath, savePath } = getStorePath();
+
+      await repository.removeFile(input.fileID);
+
+      if (file.thumbnails) {
+        await Promise.all(
+          (JSON.parse(file.thumbnails) as string[]).map((fileName) =>
+            fs.promises.unlink(`${thumbnailPath}/${fileName}`),
+          ),
+        );
+      }
+
+      await fs.promises.unlink(`${savePath}/${file.storedName}`);
     },
   ),
 };

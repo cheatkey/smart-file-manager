@@ -1,14 +1,16 @@
 import React from 'react';
 import { Rating } from 'react-simple-star-rating';
 import { useDropzone } from 'react-dropzone';
+import Swal from 'sweetalert2';
+import { toast } from 'react-hot-toast';
 import { Drawer } from '../../layout/Drawer';
 import { useSelectedFileViewer } from './hooks/store/useSelectedFileViewer';
 import { useFileInfo } from './hooks/query/useFileInfo';
 import { DrawerIcon } from '../../assets/Icon';
 import ThumbnailRenderer from './components/ThumbnailRender';
 import DebouncedTextarea from './components/DebouncedTextarea';
-import { toast } from 'react-hot-toast';
 import TagSelector from './components/TagSelector';
+import JsonEditTable from './components/JsonEditTable';
 
 const iconWrapper =
   'w-11 h-11 bg-stone-800 rounded-2xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform';
@@ -31,6 +33,20 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
       ),
     noClick: true,
   });
+
+  const callDeleteConfirmModal = () => {
+    Swal.fire({
+      title: '파일 삭제',
+      showCancelButton: true,
+      confirmButtonText: '추가',
+      cancelButtonText: '취소',
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        return handler.removeFile();
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+  };
 
   if (!data)
     return (
@@ -91,7 +107,14 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
         </div>
 
         <div className="flex flex-row gap-2">
-          <div className={iconWrapper}>
+          <div
+            className={iconWrapper}
+            onClick={() => {
+              window.electron.ipcRenderer.invoke('openFile', {
+                id: data.id,
+              });
+            }}
+          >
             <DrawerIcon.Click />
           </div>
 
@@ -103,7 +126,7 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
             <DrawerIcon.Group />
           </div>
 
-          <div className={iconWrapper}>
+          <div className={iconWrapper} onClick={callDeleteConfirmModal}>
             <DrawerIcon.Trash />
           </div>
         </div>
@@ -118,7 +141,12 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
 
         <section className="flex flex-col">
           <p className="font-semibold text-lg text-stone-100">메타데이터</p>
-          TODO
+          <JsonEditTable
+            onDebouncedChange={(metadata) => {
+              handler.setMetadata(metadata);
+            }}
+            initialValue={JSON.parse(data.metadata)}
+          />
         </section>
 
         <section className="flex flex-col">
