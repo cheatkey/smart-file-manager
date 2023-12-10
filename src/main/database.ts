@@ -1,9 +1,21 @@
 import { PrismaClient } from '@prisma/client';
+import { isNil } from 'lodash';
 import pick from 'lodash/pick';
 
 const prisma = new PrismaClient();
 
 export const repository = {
+  getTagsID: async (tagNames: string[]) =>
+    Promise.all(
+      tagNames.map((tagName) =>
+        prisma.tag.findFirst({
+          where: {
+            tagName,
+          },
+        }),
+      ),
+    ),
+
   addFileOpenActivity: async (fileID: number) => {
     const openActivity = await prisma.activity.create({
       data: {
@@ -52,6 +64,52 @@ export const repository = {
   },
 
   getAllFiles: () => prisma.file.findMany({}),
+
+  updateFile: async (
+    id: number,
+    payload: Partial<
+      Pick<FileModelDataType, 'fileName' | 'metadata' | 'memo' | 'rating'>
+    > & {
+      connect: {
+        thumbnails?: string[];
+        group?: number;
+        tags?: number[];
+        history?: number;
+      };
+    },
+  ) => {
+    type DataType = Parameters<typeof prisma.file.update>['0'];
+
+    const queryData: DataType = {
+      where: { id },
+      data: {},
+    };
+
+    if (!isNil(payload.fileName)) queryData.data.fileName = payload.fileName;
+    if (!isNil(payload.metadata)) queryData.data.metadata = payload.metadata;
+    if (!isNil(payload.memo)) queryData.data.memo = payload.memo;
+    if (!isNil(payload.rating)) queryData.data.rating = payload.rating;
+    if (!isNil(payload.connect.thumbnails))
+      queryData.data.thumbnails = JSON.stringify(payload.connect.thumbnails);
+
+    if (!isNil(payload.connect.tags)) {
+      queryData.data.tags = {
+        connect: payload.connect.tags.map((v) => ({ id: v })),
+      };
+    }
+    if (!isNil(payload.connect.history)) {
+      queryData.data.history = {
+        connect: { id: payload.connect.history },
+      };
+    }
+    if (!isNil(payload.connect.group)) {
+      queryData.data.group = {
+        connect: { id: payload.connect.group },
+      };
+    }
+
+    return prisma.file.update(queryData);
+  },
 
   createFile: async (
     payload: FileModelDataType & {

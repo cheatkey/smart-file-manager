@@ -29,6 +29,9 @@ module.exports = {
     'jsx-a11y/no-static-element-interactions': 'off',
     'consistent-return': 'off',
     'jsx-a11y/alt-text': 'off',
+    'jsx-a11y/img-redundant-alt': 'off',
+    'jsx-a11y/control-has-associated-label': 'off',
+    'no-return-await': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,

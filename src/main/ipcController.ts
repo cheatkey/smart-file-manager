@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import fs from 'fs';
-import { omit } from 'lodash';
+import { isNil, omit } from 'lodash';
 import path from 'path';
 import open from 'open';
 import { repository } from './database';
@@ -41,7 +41,107 @@ const getBase64Image = (imgPath: string) => {
   return `data:${mimeType};base64,${Buffer.from(bitmap).toString('base64')}`;
 };
 
+const moveThumbnailImage = async (
+  thumbnailsPath: { path: string; fileName: string }[],
+) => {
+  const thumbnailPath = electronStore.get(
+    'THUMBNAIL_PATH' as ElectronStoreKeyType,
+  ) as string;
+
+  const thumbnailFileList: string[] = [];
+
+  if (thumbnailsPath.length > 0) {
+    for await (const thumbnailFileItem of thumbnailsPath) {
+      const fileName = nanoid();
+      const thumbnailExt = thumbnailFileItem.fileName.split('.').at(-1);
+      const thumbnailAfterFileName = `${fileName}.${thumbnailExt}`;
+
+      await moveAndDeleteFile({
+        originalPath: thumbnailFileItem.path,
+        moveTargetPath: thumbnailPath,
+        afterFileName: thumbnailAfterFileName,
+      });
+
+      thumbnailFileList.push(thumbnailAfterFileName);
+    }
+  }
+
+  return thumbnailFileList;
+};
+
 export const ipcController = {
+  updateFile: ipcFunction(
+    z.object({
+      id: z.number(),
+      payload: z.object({
+        fileName: z.optional(z.string()),
+        memo: z.optional(z.string()),
+        metadata: z.optional(z.any()),
+        rating: z.optional(z.number()),
+
+        thumbnails: z.optional(
+          z.object({
+            addPaths: z.optional(
+              z.array(
+                z.object({
+                  path: z.string(),
+                  fileName: z.string(),
+                }),
+              ),
+            ),
+            deleteIndex: z.optional(z.number()),
+          }),
+        ),
+        group: z.optional(z.number()),
+        tags: z.optional(z.array(z.string())),
+        history: z.optional(z.number()),
+      }),
+    }),
+    async (input) => {
+      const tags = await (() => {
+        if (!isNil(input.payload.tags))
+          return repository.getTagsID(input.payload.tags);
+      })();
+
+      const thumbnails = await (async () => {
+        if (isNil(input.payload.thumbnails)) return;
+        const fileData = await repository.getFile(input.id);
+
+        let thumbnailFileNames = JSON.parse(
+          fileData?.thumbnails ?? '[]',
+        ) as string[];
+
+        if (!isNil(input.payload.thumbnails.deleteIndex)) {
+          thumbnailFileNames = thumbnailFileNames.filter(
+            (v, index) => input.payload.thumbnails?.deleteIndex !== index,
+          );
+        }
+
+        if (input.payload.thumbnails.addPaths) {
+          const added = await moveThumbnailImage(
+            input.payload.thumbnails.addPaths,
+          );
+          thumbnailFileNames = [...thumbnailFileNames, ...added];
+        }
+
+        return thumbnailFileNames;
+      })();
+
+      return repository.updateFile(input.id, {
+        fileName: input.payload.fileName,
+        memo: input.payload.memo,
+        metadata: input.payload.metadata,
+        rating: input.payload.rating,
+
+        connect: {
+          thumbnails,
+          group: input.payload.group,
+          tags: tags?.map((v) => v!.id),
+          history: input.payload.history,
+        },
+      });
+    },
+  ),
   getTagList: ipcFunction(z.object({}), async (input) =>
     repository.getAllTagList(),
   ),
@@ -111,27 +211,7 @@ export const ipcController = {
             afterFileName,
           });
 
-          const thumbnailPath = electronStore.get(
-            'THUMBNAIL_PATH' as ElectronStoreKeyType,
-          ) as string;
-
-          const thumbnailFileList: string[] = [];
-
-          if (item.thumbnails.length > 0) {
-            for await (const thumbnailFileItem of item.thumbnails) {
-              const fileName = nanoid();
-              const thumbnailExt = thumbnailFileItem.fileName.split('.').at(-1);
-              const thumbnailAfterFileName = `${fileName}.${thumbnailExt}`;
-
-              await moveAndDeleteFile({
-                originalPath: thumbnailFileItem.path,
-                moveTargetPath: thumbnailPath,
-                afterFileName: thumbnailAfterFileName,
-              });
-
-              thumbnailFileList.push(thumbnailAfterFileName);
-            }
-          }
+          const thumbnailFileList = await moveThumbnailImage(item.thumbnails);
 
           return repository.createFile({
             storedName: afterFileName,
@@ -150,7 +230,6 @@ export const ipcController = {
       );
     },
   ),
-
   openFile: ipcFunction(
     z.object({
       id: z.number(),

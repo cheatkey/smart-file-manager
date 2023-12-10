@@ -1,8 +1,11 @@
 import React from 'react';
+import { Rating } from 'react-simple-star-rating';
+import { useDropzone } from 'react-dropzone';
 import { Drawer } from '../../layout/Drawer';
 import { useSelectedFileViewer } from './hooks/store/useSelectedFileViewer';
 import { useFileInfo } from './hooks/query/useFileInfo';
 import { DrawerIcon } from '../../assets/Icon';
+import ThumbnailRenderer from './components/ThumbnailRender';
 
 const iconWrapper =
   'w-11 h-11 bg-stone-800 rounded-2xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform';
@@ -12,8 +15,18 @@ interface ISelectedFileViewerProps {}
 const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
   const fileID = useSelectedFileViewer((state) => state.fileID);
   const setFileID = useSelectedFileViewer((state) => state.setFileID);
-  const { data } = useFileInfo(fileID);
+  const { data, handler } = useFileInfo(fileID);
   const isOpen = fileID !== null;
+
+  const { getRootProps, isDragActive } = useDropzone({
+    onDrop: (acceptedFiles) =>
+      handler.addThumbnail(
+        acceptedFiles.map((v) => ({
+          path: v.path,
+          fileName: v.name,
+        })),
+      ),
+  });
 
   if (!data)
     return (
@@ -35,17 +48,38 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
       }}
     >
       <div className="flex flex-col p-4 gap-3">
-        <img src={data?.thumbnails[0]} className="w-full rounded-2xl" />
+        <section className="flex flex-col gap-3">
+          {data?.thumbnails.map((thumbnail, deletedThumbnailIndex) => (
+            <ThumbnailRenderer
+              key={thumbnail}
+              imageUrl={thumbnail}
+              handleDeleteImage={() => {
+                handler.deleteThumbnail(deletedThumbnailIndex);
+              }}
+            />
+          ))}
 
-        <div className="flex border-dashed border-2 border-stone-500 w-full h-32 rounded-2xl items-center justify-center text-stone-400 font-semibold">
-          썸네일 추가
-        </div>
+          <div
+            {...getRootProps()}
+            className={`flex border-dashed border-2 w-full h-32 rounded-2xl items-center justify-center font-semibold transition-colors ${
+              isDragActive
+                ? 'border-stone-400 text-stone-300'
+                : 'border-stone-500 text-stone-400'
+            }`}
+          >
+            썸네일 추가
+          </div>
+        </section>
 
         <div className="flex flex-col gap-0 mt-2">
           <p className="font-bold text-xl">{data.fileName}</p>
-          <p className="font-medium text-stone-300 text-base">
-            여기에는 뭘 쓰지
-          </p>
+          <p className="font-medium text-base">여기에는 뭘 쓰지</p>
+          <Rating
+            allowFraction
+            transition
+            SVGclassName="inline-block"
+            size={32}
+          />
         </div>
 
         <div className="flex flex-row gap-2">
@@ -59,10 +93,6 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
 
           <div className={iconWrapper}>
             <DrawerIcon.Group />
-          </div>
-
-          <div className={iconWrapper}>
-            <DrawerIcon.Calendar />
           </div>
 
           <div className={iconWrapper}>
@@ -110,6 +140,15 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
             </tr>
             <tr>
               <td>마지막 조회 시간</td>
+              <td>
+                {data.activity
+                  .filter((v) => v.content === 'open')
+                  .at(-1)
+                  ?.date.toLocaleString()}
+              </td>
+            </tr>
+            <tr>
+              <td>파일 추가 날짜</td>
               <td>
                 {data.activity
                   .filter((v) => v.content === 'open')
