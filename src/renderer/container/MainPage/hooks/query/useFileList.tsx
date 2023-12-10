@@ -1,8 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '../../../../utils/queryKeys';
 
-const queryKeys = {
-  getFileList: ['getFileList'],
-};
 export const useFileList = () => {
   const { isLoading, data } = useQuery({
     queryKey: queryKeys.getFileList,

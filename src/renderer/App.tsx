@@ -1,6 +1,8 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import MainPage from './container/MainPage/MainPage';
 import Sidebar from './layout/Sidebar';
+import Drawer from './layout/Drawer';
+import SelectedFileViewer from './container/SelectedFileViewer/SelectedFileViewer';
 
 const App = () => {
   return (
@@ -8,8 +10,9 @@ const App = () => {
       <Sidebar />
       <Routes>
         <Route path="/" element={<MainPage />} />
-        <Route path="/history" element={<p>히ㅡㅌ리</p>} />
+        <Route path="/history" element={<></>} />
       </Routes>
+      <SelectedFileViewer />
     </Router>
   );
 };

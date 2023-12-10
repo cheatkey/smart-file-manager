@@ -32,6 +32,7 @@ export const FileExtensionBackground = ({
     if (['docs'].includes(lowerExtension)) return FileIcon.Word;
     if (['jpg', 'png', 'gif', 'jpeg'].includes(lowerExtension))
       return FileIcon.Image;
+    if (['mp4'].includes(lowerExtension)) return FileIcon.Video;
   })();
 
   if (IconElement)

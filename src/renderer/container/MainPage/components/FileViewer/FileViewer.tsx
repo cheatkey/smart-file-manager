@@ -7,6 +7,7 @@ import {
   ImageBackgroundBackground,
 } from './FileBackground';
 import { useClickHandler } from './hooks/useClickHandler';
+import { useSelectedFileViewer } from '../../../SelectedFileViewer/hooks/store/useSelectedFileViewer';
 
 interface IFileViewerProps {
   id: number;
@@ -26,13 +27,16 @@ const FileViewer = ({
   const hasThumbnail = thumbnails.length > 0;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const isHover = useHoverDirty(wrapperRef);
+  const setFileID = useSelectedFileViewer((state) => state.setFileID);
   const { handleClick, handleDoubleClick } = useClickHandler({
     click: () => {
+      setFileID(id);
+    },
+    doubleClick: () => {
       window.electron.ipcRenderer.invoke('openFile', {
         id,
       });
     },
-    doubleClick: () => {},
   });
 
   return (

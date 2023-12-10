@@ -59,7 +59,25 @@ export const ipcController = {
       ),
     }));
   }),
+  getFileInfo: ipcFunction(
+    z.object({
+      fileID: z.number(),
+    }),
+    async (input) => {
+      const fileData = await repository.getFile(input.fileID);
 
+      const thumbnailPath = electronStore.get(
+        'THUMBNAIL_PATH' as ElectronStoreKeyType,
+      ) as string;
+
+      return {
+        ...omit(fileData, 'thumbnails'),
+        thumbnails: (JSON.parse(fileData?.thumbnails ?? '[]') as string[]).map(
+          (fileName) => getBase64Image(`${thumbnailPath}/${fileName}`),
+        ),
+      };
+    },
+  ),
   addNewFiles: ipcFunction(
     z.object({
       files: z.array(
