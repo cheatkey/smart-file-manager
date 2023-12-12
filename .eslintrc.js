@@ -33,6 +33,7 @@ module.exports = {
     'jsx-a11y/control-has-associated-label': 'off',
     'no-return-await': 'off',
     'import/order': 'off',
+    'react/jsx-no-useless-fragment': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,

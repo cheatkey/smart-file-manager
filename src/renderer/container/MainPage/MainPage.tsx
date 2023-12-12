@@ -7,12 +7,14 @@ import FileViewer from './components/FileViewer/FileViewer';
 import { useFileList } from './hooks/query/useFileList';
 import TileFileViewer from './components/FileListViewer/TileFileViewer';
 import TableFileViewer from './components/FileListViewer/TableFileViewer';
+import { FileViewerIcon } from '../../assets/Icon';
 
 interface IAddFilesPageProps {}
 
 const MainPage = ({}: IAddFilesPageProps) => {
   const fileList = useFileList();
-  console.log('fileList:', fileList);
+  const [isGridView, setIsGridView] = useToggle(true);
+
   return (
     <DragDropUploader>
       <section className="p-6 w-full flex flex-col gap-9">
@@ -38,34 +40,43 @@ const MainPage = ({}: IAddFilesPageProps) => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <h1 className="font-bold text-2xl tracking-tight text-stone-800">
-            모든 파일
-          </h1>
+          <div className="flex flex-row justify-between">
+            <h1 className="font-bold text-2xl tracking-tight text-stone-800">
+              모든 파일
+            </h1>
 
-          {/* TileFileViewer */}
-
-          {fileList.data && (
-            <div>
-              <TableFileViewer
-                data={[
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                  ...fileList.data,
-                ]}
-              />
+            <div className="flex flex-row overflow-hidden items-center rounded-xl gap-1 bg-stone-50">
+              <div
+                onClick={() => {
+                  setIsGridView(true);
+                }}
+                className={`bg-stone-50 pl-2 py-1 ${
+                  isGridView && 'bg-stone-200'
+                }`}
+              >
+                <FileViewerIcon.Grid />
+              </div>
+              <div
+                onClick={() => {
+                  setIsGridView(false);
+                }}
+                className={`bg-stone-50 pl-1 pr-2 py-1 ${
+                  !isGridView ? 'bg-stone-200' : ''
+                }`}
+              >
+                <FileViewerIcon.List />
+              </div>
             </div>
+          </div>
+
+          {!!fileList.data && (
+            <>
+              {isGridView ? (
+                <TileFileViewer data={fileList.data} />
+              ) : (
+                <TableFileViewer data={fileList.data} />
+              )}
+            </>
           )}
         </div>
       </section>
