@@ -1,7 +1,16 @@
 import { createRoot } from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import './index.css';
+
+dayjs.locale('ko');
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('Asia/Seoul');
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);

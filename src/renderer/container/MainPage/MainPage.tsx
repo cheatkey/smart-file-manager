@@ -5,7 +5,8 @@ import { useElectronStore } from '../../utils/hooks/useStore';
 import DragDropUploader from './components/DragDropUploader/DragDropUploader';
 import FileViewer from './components/FileViewer/FileViewer';
 import { useFileList } from './hooks/query/useFileList';
-import TileFileViewer from './components/TileFileViewer/TileFileViewer';
+import TileFileViewer from './components/FileListViewer/TileFileViewer';
+import TableFileViewer from './components/FileListViewer/TableFileViewer';
 
 interface IAddFilesPageProps {}
 
@@ -41,15 +42,31 @@ const MainPage = ({}: IAddFilesPageProps) => {
             모든 파일
           </h1>
 
-          <div className="grid grid-cols-4 gap-2">
-            {fileList.data?.map((item) => (
-              <TileFileViewer
-                thumbnails={item.thumbnails}
-                fileName={item.fileName}
-                id={item.id}
+          {/* TileFileViewer */}
+
+          {fileList.data && (
+            <div>
+              <TableFileViewer
+                data={[
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                  ...fileList.data,
+                ]}
               />
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       </section>
     </DragDropUploader>

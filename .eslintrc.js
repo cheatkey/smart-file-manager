@@ -32,6 +32,7 @@ module.exports = {
     'jsx-a11y/img-redundant-alt': 'off',
     'jsx-a11y/control-has-associated-label': 'off',
     'no-return-await': 'off',
+    'import/order': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,

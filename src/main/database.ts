@@ -72,7 +72,17 @@ export const repository = {
     });
   },
 
-  getAllFiles: () => prisma.file.findMany({}),
+  getAllFiles: () =>
+    prisma.file.findMany({
+      include: {
+        activity: {
+          orderBy: {
+            id: 'desc',
+          },
+          take: 1,
+        },
+      },
+    }),
 
   updateFile: async (
     id: number,
