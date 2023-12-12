@@ -65,7 +65,7 @@ const moveThumbnailImage = async (
       const thumbnailExt = thumbnailFileItem.fileName.split('.').at(-1);
       const thumbnailAfterFileName = `${fileName}.${thumbnailExt}`;
 
-      await moveAndDeleteFile({
+      await moveFile({
         originalPath: thumbnailFileItem.path,
         moveTargetPath: thumbnailPath,
         afterFileName: thumbnailAfterFileName,
@@ -111,7 +111,17 @@ export const ipcController = {
         ),
         group: z.optional(z.number()),
         tags: z.optional(z.array(z.string())),
-        history: z.optional(z.number()),
+        history: z.optional(
+          z.object({
+            add: z.optional(
+              z.object({
+                path: z.string(),
+                fileName: z.string(),
+              }),
+            ),
+            delete: z.optional(z.string()),
+          }),
+        ),
       }),
     }),
     async (input) => {
@@ -159,6 +169,33 @@ export const ipcController = {
         return thumbnailFileNames;
       })();
 
+      const history = await (async () => {
+        if (input.payload.history?.add) {
+          const extension =
+            input.payload.history.add.fileName.split('.').at(-1) ?? '';
+          const afterFileName = `${nanoid()}.${extension}`;
+          const savePath = getStorePath().savePath;
+
+          await moveFile({
+            originalPath: input.payload.history.add.path,
+            moveTargetPath: savePath,
+            afterFileName,
+          });
+
+          return {
+            addFile: afterFileName,
+          };
+        }
+
+        if (input.payload.history?.delete) {
+          return {
+            delete: input.payload.history.delete,
+          };
+        }
+
+        return undefined;
+      })();
+
       return repository.updateFile(input.id, {
         fileName: input.payload.fileName,
         memo: input.payload.memo,
@@ -169,7 +206,7 @@ export const ipcController = {
           thumbnails,
           group: input.payload.group,
           tags,
-          history: input.payload.history,
+          history,
         },
       });
     },
@@ -199,7 +236,8 @@ export const ipcController = {
       const thumbnailPath = getStorePath().thumbnailPath;
 
       return {
-        ...omit(fileData, ['thumbnails', 'rating']),
+        ...omit(fileData, ['thumbnails', 'rating', 'history']),
+        history: JSON.parse(fileData?.history ?? '[]') as string[],
         rating: (() => {
           if (isNil(fileData) || isNil(fileData?.rating))
             return fileData?.rating;
@@ -236,7 +274,7 @@ export const ipcController = {
           const { size: fileSize } = await fs.promises.stat(item.path);
           const savePath = getStorePath().savePath;
 
-          await moveAndDeleteFile({
+          await moveFile({
             originalPath: item.path,
             moveTargetPath: savePath,
             afterFileName,
@@ -264,14 +302,25 @@ export const ipcController = {
   openFile: ipcFunction(
     z.object({
       id: z.number(),
+      historyFile: z.optional(z.string()),
     }),
     async (input) => {
       await repository.addFileOpenActivity(input.id);
       const file = await repository.getFile(input.id);
-
+      if (!file) throw new Error();
       const savePath = getStorePath().savePath;
 
-      if (!file) throw new Error();
+      if (input.historyFile) {
+        if (
+          (JSON.parse(file.history) as string[]).includes(input.historyFile) ===
+          false
+        ) {
+          throw new Error('invalid version');
+        }
+
+        open(`${savePath}/${input.historyFile}`);
+        return;
+      }
 
       open(`${savePath}/${file.storedName}`);
     },
@@ -301,7 +350,7 @@ export const ipcController = {
   ),
 };
 
-const moveAndDeleteFile = async (props: {
+const moveFile = async (props: {
   originalPath: string;
   moveTargetPath: string;
   afterFileName: string;

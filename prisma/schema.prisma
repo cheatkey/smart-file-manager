@@ -21,8 +21,7 @@ model File {
   group      Group?     @relation(fields: [groupId], references: [id])
   groupId    Int?
   tags       Tag[]
-  history    History?   @relation(fields: [historyId], references: [id])
-  historyId  Int?
+  history    String
   extension  String
   fileSize   Int
   activity   Activity[]
@@ -39,13 +38,6 @@ model Group {
   id        Int    @id @default(autoincrement())
   groupName String
   files     File[]
-}
-
-model History {
-  id          Int    @id @default(autoincrement())
-  historyName String
-  version     Int
-  files       File[]
 }
 
 model Activity {

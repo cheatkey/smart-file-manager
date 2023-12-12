@@ -8,6 +8,8 @@ import {
 } from '@tanstack/react-table';
 import React from 'react';
 import dayjs from 'dayjs';
+import { isNil } from 'lodash';
+import { useSelectedFileViewer } from '../../../SelectedFileViewer/hooks/store/useSelectedFileViewer';
 
 type FileDataType = {
   thumbnails: string[];
@@ -69,14 +71,16 @@ const columns = [
   columnHelper.accessor('activity', {
     header: () => '최근 조회',
     size: 100,
-    cell: (info) => (
-      <p className="">{getTimeDifference(info.getValue()[0].date)}</p>
-    ),
+    cell: (info) => {
+      const dateData = info.getValue()?.[0]?.date;
+      if (isNil(dateData)) return <p>-</p>;
+      return <p className="">{getTimeDifference(dateData)}</p>;
+    },
     enableSorting: true,
     sortingFn: (a, b, columnID) => {
       return (
-        ((a as any).getValue(columnID)[0].date as Date).getTime() -
-        ((b as any).getValue(columnID)[0].date as Date).getTime()
+        ((a as any).getValue(columnID)?.[0]?.date as Date).getTime() -
+        ((b as any).getValue(columnID)?.[0]?.date as Date).getTime()
       );
     },
   }),
@@ -94,6 +98,7 @@ const TableFileViewer = ({ data }: ITableFileViewerProps) => {
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
   });
+  const setFileID = useSelectedFileViewer((state) => state.setFileID);
 
   return (
     <table className="table-fixed border-collapse w-full">
@@ -128,6 +133,9 @@ const TableFileViewer = ({ data }: ITableFileViewerProps) => {
       <tbody>
         {table.getRowModel().rows.map((row) => (
           <tr
+            onClick={() => {
+              setFileID(row.original.id);
+            }}
             key={row.id}
             className="text-sm border-b-2 border-stone-100 text-stone-700 h-28 hover:bg-stone-50 transition-colors"
           >

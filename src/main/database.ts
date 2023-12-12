@@ -53,7 +53,6 @@ export const repository = {
       },
       include: {
         group: true,
-        history: true,
         activity: true,
         tags: true,
       },
@@ -96,11 +95,20 @@ export const repository = {
           connect: number[];
           disconnect: number[];
         };
-        history?: number;
+        history?: {
+          addFile?: string;
+          delete?: string;
+        };
       };
     },
   ) => {
     type DataType = Parameters<typeof prisma.file.update>['0'];
+    const prevData = await prisma.file.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!prevData) throw new Error('잘못된 FileID');
 
     const queryData: DataType = {
       where: { id },
@@ -120,15 +128,21 @@ export const repository = {
         disconnect: payload.connect.tags.disconnect.map((v) => ({ id: v })),
       };
     }
-    if (!isNil(payload.connect.history)) {
-      queryData.data.history = {
-        connect: { id: payload.connect.history },
-      };
-    }
     if (!isNil(payload.connect.group)) {
       queryData.data.group = {
         connect: { id: payload.connect.group },
       };
+    }
+    if (!isNil(payload.connect.history?.addFile)) {
+      const history = [...JSON.parse(prevData.history), prevData.storedName];
+      queryData.data.history = JSON.stringify(history);
+      queryData.data.storedName = payload.connect.history?.addFile;
+    }
+    if (!isNil(payload.connect.history?.delete)) {
+      const history = JSON.parse(prevData.history).filter(
+        (item: string) => item !== payload.connect.history?.delete,
+      );
+      queryData.data.history = JSON.stringify(history);
     }
 
     return prisma.file.update(queryData);
@@ -158,6 +172,7 @@ export const repository = {
           'fileSize',
           'rating',
         ]),
+        history: '[]',
         thumbnails: hasThumbnails
           ? JSON.stringify(payload.connect.thumbnails)
           : '[]',
@@ -173,12 +188,6 @@ export const repository = {
           payload.connect?.tags !== undefined
             ? {
                 connect: payload.connect.tags.map((tag) => ({ id: tag })),
-              }
-            : {},
-        history:
-          payload.connect?.history !== undefined
-            ? {
-                connect: { id: payload.connect.history },
               }
             : {},
       },

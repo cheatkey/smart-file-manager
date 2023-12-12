@@ -11,6 +11,7 @@ import ThumbnailRenderer from './components/ThumbnailRender';
 import DebouncedTextarea from './components/DebouncedTextarea';
 import TagSelector from './components/TagSelector';
 import JsonEditTable from './components/JsonEditTable';
+import AddDragFile from './components/AddDragFile';
 
 const iconWrapper =
   'w-11 h-11 bg-stone-800 rounded-2xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform';
@@ -22,17 +23,6 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
   const setFileID = useSelectedFileViewer((state) => state.setFileID);
   const { data, handler } = useFileInfo(fileID);
   const isOpen = fileID !== null;
-
-  const { getRootProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) =>
-      handler.addThumbnail(
-        acceptedFiles.map((v) => ({
-          path: v.path,
-          fileName: v.name,
-        })),
-      ),
-    noClick: true,
-  });
 
   const callDeleteConfirmModal = () => {
     Swal.fire({
@@ -60,6 +50,13 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
       </Drawer>
     );
 
+  const historyFiles = [
+    ...data.history.slice(0, -1).map((fileName, index) => ({
+      fileName,
+      index: index + 1,
+    })),
+  ].reverse();
+
   return (
     <Drawer
       isOpen={isOpen}
@@ -79,16 +76,18 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
             />
           ))}
 
-          <div
-            {...getRootProps()}
-            className={`flex border-dashed border-2 w-full h-32 rounded-2xl items-center justify-center font-semibold transition-colors ${
-              isDragActive
-                ? 'border-stone-400 text-stone-300'
-                : 'border-stone-500 text-stone-400'
-            }`}
+          <AddDragFile
+            handleOnDrop={(acceptedFiles) => {
+              handler.addThumbnail(
+                acceptedFiles.map((v) => ({
+                  path: v.path,
+                  fileName: v.name,
+                })),
+              );
+            }}
           >
             썸네일 추가
-          </div>
+          </AddDragFile>
         </section>
 
         <div className="flex flex-col gap-0 mt-2">
@@ -189,6 +188,48 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
               </td>
             </tr>
           </table>
+        </section>
+
+        <section className="flex flex-col gap-2">
+          <p className="font-semibold text-lg text-stone-100">버전 관리</p>
+
+          {historyFiles.map((v) => (
+            <div className="flex flex-row gap-2 items-center group">
+              <span className="bg-stone-800 py-1 px-3 rounded-lg text-sm">
+                {v.index}
+              </span>{' '}
+              <p
+                className="cursor-pointer"
+                onClick={() => {
+                  window.electron.ipcRenderer.invoke('openFile', {
+                    id: data.id,
+                    historyFile: v.fileName,
+                  });
+                }}
+              >
+                {v.fileName}
+              </p>
+              <p
+                className="hidden group-hover:block cursor-pointer"
+                onClick={() => {
+                  handler.deleteVersion(v.fileName);
+                }}
+              >
+                <DrawerIcon.SmallX />
+              </p>
+            </div>
+          ))}
+
+          <AddDragFile
+            handleOnDrop={(acceptedFiles) => {
+              handler.addNewVersionFile({
+                path: acceptedFiles[0].path,
+                fileName: acceptedFiles[0].name,
+              });
+            }}
+          >
+            새로운 버전 파일 추가
+          </AddDragFile>
         </section>
       </div>
     </Drawer>

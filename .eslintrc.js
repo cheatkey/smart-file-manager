@@ -34,6 +34,7 @@ module.exports = {
     'no-return-await': 'off',
     'import/order': 'off',
     'react/jsx-no-useless-fragment': 'off',
+    'jsx-a11y/no-noninteractive-element-interactions': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,

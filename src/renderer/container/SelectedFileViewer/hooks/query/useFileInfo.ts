@@ -102,6 +102,26 @@ export const useFileInfo = (id: number | null) => {
       });
       toast.success('파일 삭제 완료');
     },
+    addNewVersionFile: async (item: { path: string; fileName: string }) => {
+      await mutateAsync({
+        id,
+        payload: {
+          history: {
+            add: item,
+          },
+        },
+      });
+    },
+    deleteVersion: async (oldFileName: string) => {
+      await mutateAsync({
+        id,
+        payload: {
+          history: {
+            delete: oldFileName,
+          },
+        },
+      });
+    },
   };
 
   return { data, handler };
@@ -120,7 +140,13 @@ const mutationUploadFile = async (props: {
     };
     group?: number | undefined;
     tags?: string[] | undefined;
-    history?: number | undefined;
+    history?: {
+      add?: {
+        path: string;
+        fileName: string;
+      };
+      delete?: string;
+    };
   };
 }) => {
   if (isNil(props.id)) return;
