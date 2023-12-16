@@ -5,6 +5,7 @@ import path from 'path';
 import open from 'open';
 import { repository } from './database';
 import { ElectronStoreKeyType, electronStore } from './main';
+import { findSimilarThumbnails } from './search';
 
 const { nanoid } = require('nanoid');
 
@@ -28,7 +29,7 @@ const ipcFunction = <T extends z.ZodObject<any>, S>(
   };
 };
 
-const getBase64Image = (imgPath: string) => {
+export const getBase64Image = (imgPath: string) => {
   const bitmap = fs.readFileSync(path.resolve(imgPath));
   const ext = path.extname(imgPath).substring(1);
 
@@ -41,7 +42,7 @@ const getBase64Image = (imgPath: string) => {
   return `data:${mimeType};base64,${Buffer.from(bitmap).toString('base64')}`;
 };
 
-const getStorePath = () => {
+export const getStorePath = () => {
   const thumbnailPath = electronStore.get(
     'THUMBNAIL_PATH' as ElectronStoreKeyType,
   ) as string;
@@ -79,6 +80,14 @@ const moveThumbnailImage = async (
 };
 
 export const ipcController = {
+  findSimilarThumbnails: ipcFunction(
+    z.object({
+      id: z.number(),
+    }),
+    (input) => {
+      return findSimilarThumbnails(input.id);
+    },
+  ),
   addTag: ipcFunction(
     z.object({
       tagName: z.string(),
@@ -271,7 +280,8 @@ export const ipcController = {
         input.files.map(async (item) => {
           const extension = item.fileName.split('.').at(-1) ?? '';
           const afterFileName = `${nanoid()}.${extension}`;
-          const { size: fileSize } = await fs.promises.stat(item.path);
+          const { size: _fileSize } = await fs.promises.stat(item.path);
+          const fileSize = Math.floor(_fileSize / 1024);
           const savePath = getStorePath().savePath;
 
           await moveFile({
