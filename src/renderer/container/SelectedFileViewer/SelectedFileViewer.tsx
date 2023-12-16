@@ -12,6 +12,7 @@ import DebouncedTextarea from './components/DebouncedTextarea';
 import TagSelector from './components/TagSelector';
 import JsonEditTable from './components/JsonEditTable';
 import AddDragFile from './components/AddDragFile';
+import { useNavigate } from 'react-router-dom';
 
 const iconWrapper =
   'w-11 h-11 bg-stone-800 rounded-2xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform';
@@ -22,7 +23,10 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
   const fileID = useSelectedFileViewer((state) => state.fileID);
   const setFileID = useSelectedFileViewer((state) => state.setFileID);
   const { data, handler } = useFileInfo(fileID);
+
   const isOpen = fileID !== null;
+
+  const navigate = useNavigate();
 
   const callDeleteConfirmModal = () => {
     Swal.fire({
@@ -91,7 +95,16 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
         </section>
 
         <div className="flex flex-col gap-0 mt-2">
-          <p className="font-bold text-xl">{data.fileName}</p>
+          <DebouncedTextarea
+            initialValue={data.fileName}
+            onDebouncedChange={(fileName) => {
+              handler.setTitle(fileName);
+            }}
+            uiOption={{
+              isOneLine: true,
+            }}
+          />
+
           <p className="font-medium text-base">여기에는 뭘 쓰지</p>
           <Rating
             initialValue={data.rating}
@@ -115,6 +128,15 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
             }}
           >
             <DrawerIcon.Click />
+          </div>
+
+          <div
+            className={iconWrapper}
+            onClick={() => {
+              navigate(`/search/${fileID}`);
+            }}
+          >
+            <DrawerIcon.ThumbnailSearch />
           </div>
 
           <div className={iconWrapper}>
@@ -242,7 +264,7 @@ const formatBytes = (bytes: number) => {
   const decimals = 2;
   if (bytes === 0) return '0 Bytes';
 
-  const k = 1024;
+  const k = 1;
   const dm = decimals < 0 ? 0 : decimals;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 

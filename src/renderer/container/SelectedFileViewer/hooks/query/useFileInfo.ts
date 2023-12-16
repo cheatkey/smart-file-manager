@@ -25,6 +25,14 @@ export const useFileInfo = (id: number | null) => {
   });
 
   const handler = {
+    setTitle: async (fileName: string) => {
+      await mutateAsync({
+        id,
+        payload: { fileName },
+      });
+
+      toast.success('메모 저장 완료');
+    },
     setMemo: async (content: string) => {
       await mutateAsync({
         id,
@@ -124,7 +132,7 @@ export const useFileInfo = (id: number | null) => {
     },
   };
 
-  return { data, handler };
+  return { data, isLoading, handler };
 };
 
 const mutationUploadFile = async (props: {
