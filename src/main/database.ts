@@ -92,6 +92,7 @@ export const repository = {
   },
 
   getAllFiles: {
+    default: () => prisma.file.findMany({}),
     includeActivity: () =>
       prisma.file.findMany({
         include: {

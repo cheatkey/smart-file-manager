@@ -5,7 +5,7 @@ import path from 'path';
 import open from 'open';
 import { repository } from './database';
 import { ElectronStoreKeyType, electronStore } from './main';
-import { findSimilarThumbnails } from './search';
+import { findSimilarMemo, findSimilarThumbnails } from './search';
 
 const { nanoid } = require('nanoid');
 
@@ -83,6 +83,22 @@ const intersection = (a: string[], b: string[]) =>
   a.filter((value) => b.includes(value));
 
 export const ipcController = {
+  findSimilarMemo: ipcFunction(
+    z.object({
+      id: z.number(),
+    }),
+    async (input) => {
+      const thumbnailPath = getStorePath().thumbnailPath;
+      const result = await findSimilarMemo(input.id);
+
+      return result.map((v) => ({
+        ...v,
+        thumbnails: (JSON.parse(v?.thumbnails ?? '[]') as string[]).map(
+          (fileName) => getBase64Image(`${thumbnailPath}/${fileName}`),
+        ),
+      }));
+    },
+  ),
   findTagSimilar: ipcFunction(
     z.object({
       id: z.number(),

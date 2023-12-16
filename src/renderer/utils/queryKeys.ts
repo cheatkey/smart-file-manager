@@ -5,4 +5,5 @@ export const queryKeys = {
   getSimilarThumbnails: (id: number | null) => ['getSimilarThumbnails', id],
   getTagFiles: (tagName: string) => ['getTagFiles', tagName],
   getSimilarTags: (id: number | null) => ['getSimilarTags', id],
+  SearchSimilarMemo: (id: number | null) => ['SearchSimilarMemo', id],
 };

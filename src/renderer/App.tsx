@@ -6,6 +6,7 @@ import SelectedFileViewer from './container/SelectedFileViewer/SelectedFileViewe
 import SearchSimilarPage from './container/Search/SearchSimilar/SearchSimilarPage';
 import SearchTagFilesPage from './container/Search/SearchTag/SearchTagFilesPage';
 import SearchTagSimilarPage from './container/Search/SearchTagSimilar/SearchTagSimilarPage';
+import SearchSimilarMemo from './container/Search/SearchSimilarMemo/SearchSimilarMemo';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
               path="/search-tag-similar/:id"
               element={<SearchTagSimilarPage />}
             />
+            <Route path="/search-memo/:id" element={<SearchSimilarMemo />} />
           </Routes>
         </div>
         <SelectedFileViewer />

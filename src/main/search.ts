@@ -1,8 +1,9 @@
-import * as tf from '@tensorflow/tfjs-node-gpu';
+import * as tf from '@tensorflow/tfjs-node';
 import { load } from '@tensorflow-models/mobilenet';
 import fs from 'fs';
 import { repository } from './database';
 import { getBase64Image, getStorePath } from './ipcController';
+import { load as encoderLoad } from '@tensorflow-models/universal-sentence-encoder';
 import { isNil } from 'lodash';
 
 const getImageEmbedding = async (imagePath: string) => {
@@ -91,4 +92,37 @@ export const findSimilarThumbnails = async (targetID: number) => {
       fileName: v.fileName,
     };
   });
+};
+
+export const findSimilarMemo = async (targetID: number) => {
+  console.log('use:', encoderLoad);
+  const model = await encoderLoad();
+  const allFiles = await repository.getAllFiles.default();
+
+  const targetMemo = allFiles.find((v) => v.id === targetID)?.memo;
+  if (isNil(targetMemo)) throw new Error('파일을 찾을 수 없음');
+  const otherFileList = allFiles.filter((v) => v.id !== targetID);
+
+  const scores = [];
+
+  for await (const otherFile of otherFileList) {
+    try {
+      const sentences = [targetMemo, otherFile.memo];
+      const embeddings = await model.embed(sentences);
+      const sentenceA = embeddings.slice([0, 0], [1]);
+      const sentenceB = embeddings.slice([1, 0], [1]);
+      const similarity = tf.losses.cosineDistance(sentenceA, sentenceB, 0);
+
+      scores.push({
+        id: otherFile.id,
+        similarity: similarity.dataSync()[0],
+        fileName: otherFile.fileName,
+        thumbnails: otherFile.thumbnails,
+      });
+    } catch (err) {}
+  }
+
+  scores.sort((a, b) => b.similarity - a.similarity);
+
+  return scores;
 };
