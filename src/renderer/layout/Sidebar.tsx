@@ -11,7 +11,7 @@ const Sidebar = ({}: ISidebarProps) => {
   const navigate = useNavigate();
 
   return (
-    <aside className="min-h-screen w-16 bg-stone-950 flex flex-col p-4 text-white">
+    <aside className="min-h-screen w-16 bg-stone-950 flex flex-col p-4 text-white h-screen fixed">
       <div className="h-1/6 flex flex-col items-center"></div>
 
       <div className="h-4/6 flex flex-col items-center">
