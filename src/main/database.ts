@@ -5,6 +5,15 @@ import pick from 'lodash/pick';
 const prisma = new PrismaClient();
 
 export const repository = {
+  getFileThumbnails: async () => {
+    return prisma.file.findMany({
+      select: {
+        thumbnails: true,
+        id: true,
+        fileName: true,
+      },
+    });
+  },
   removeFile: async (fileID: number) => {
     return prisma.file.delete({
       where: {
