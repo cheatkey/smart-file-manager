@@ -3,7 +3,8 @@ import { Toaster } from 'react-hot-toast';
 import MainPage from './container/MainPage/MainPage';
 import Sidebar from './layout/Sidebar';
 import SelectedFileViewer from './container/SelectedFileViewer/SelectedFileViewer';
-import SearchSimilarPage from './container/SearchSimilar/SearchSimilarPage';
+import SearchSimilarPage from './container/Search/SearchSimilar/SearchSimilarPage';
+import SearchTagFilesPage from './container/Search/SearchTag/SearchTagFilesPage';
 
 const App = () => {
   return (
@@ -15,6 +16,10 @@ const App = () => {
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/search/:id" element={<SearchSimilarPage />} />
+            <Route
+              path="/search-tag/:tagName"
+              element={<SearchTagFilesPage />}
+            />
           </Routes>
         </div>
         <SelectedFileViewer />

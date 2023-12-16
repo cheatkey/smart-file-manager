@@ -5,6 +5,17 @@ import pick from 'lodash/pick';
 const prisma = new PrismaClient();
 
 export const repository = {
+  findTagFiles: async (tagName: string) => {
+    return prisma.tag.findFirst({
+      where: {
+        tagName,
+      },
+      include: {
+        files: true,
+      },
+    });
+  },
+
   getFileThumbnails: async () => {
     return prisma.file.findMany({
       select: {

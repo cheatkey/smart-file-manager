@@ -80,6 +80,26 @@ const moveThumbnailImage = async (
 };
 
 export const ipcController = {
+  findTagFiles: ipcFunction(
+    z.object({
+      tagName: z.string(),
+    }),
+    async (input) => {
+      const thumbnailPath = getStorePath().thumbnailPath;
+      const found = await repository.findTagFiles(input.tagName);
+
+      return {
+        ...found,
+        files: found?.files.map((v) => ({
+          ...omit(v, 'thumbnails'),
+          thumbnails: (JSON.parse(v.thumbnails ?? '[]') as string[]).map(
+            (fileName) => getBase64Image(`${thumbnailPath}/${fileName}`),
+          ),
+        })),
+      };
+    },
+  ),
+
   findSimilarThumbnails: ipcFunction(
     z.object({
       id: z.number(),

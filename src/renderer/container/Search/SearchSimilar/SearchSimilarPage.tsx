@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { queryKeys } from '../../utils/queryKeys';
+import { queryKeys } from '../../../utils/queryKeys';
 import { isNil } from 'lodash';
-import { useFileInfo } from '../SelectedFileViewer/hooks/query/useFileInfo';
-import TileFileViewer from '../MainPage/components/FileListViewer/TileFileViewer';
+import { useFileInfo } from '../../SelectedFileViewer/hooks/query/useFileInfo';
+import TileFileViewer from '../../MainPage/components/FileListViewer/TileFileViewer';
 
 interface ISearchSimilarPageProps {}
 

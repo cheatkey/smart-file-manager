@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { useTagList } from '../hooks/query/useTagList';
 import { DrawerIcon } from '../../../assets/Icon';
 import { selectDarkStyle } from '../../../utils/style/reactSelectstyle';
+import { useNavigate } from 'react-router-dom';
 
 interface ITagSelectorProps {
   initialValue: {
@@ -14,6 +15,7 @@ interface ITagSelectorProps {
 }
 
 const TagSelector = ({ initialValue, handleChangeTags }: ITagSelectorProps) => {
+  const navigate = useNavigate();
   const { data: allTagList, addNewTag } = useTagList();
 
   const callAddTagModal = () => {
@@ -35,18 +37,29 @@ const TagSelector = ({ initialValue, handleChangeTags }: ITagSelectorProps) => {
 
   return (
     <div className="flex flex-row gap-2 items-center">
-      <Select
-        defaultValue={initialValue.map((v) => ({
-          label: v.tagName,
-          value: v.tagName,
-        }))}
-        isMulti
-        options={allTagList?.map((v) => ({ label: v, value: v }))}
-        styles={selectDarkStyle}
-        onChange={(value) => {
-          handleChangeTags((value as { label: string }[]).map((v) => v.label));
+      <div
+        onClick={(e) => {
+          const clickedElement = e.target as unknown as Element;
+          if (clickedElement?.className?.includes('MultiValueGeneric')) {
+            navigate(`/search-tag/${clickedElement.innerHTML.trim()}`);
+          }
         }}
-      />
+      >
+        <Select
+          defaultValue={initialValue.map((v) => ({
+            label: v.tagName,
+            value: v.tagName,
+          }))}
+          isMulti
+          options={allTagList?.map((v) => ({ label: v, value: v }))}
+          styles={selectDarkStyle}
+          onChange={(value) => {
+            handleChangeTags(
+              (value as { label: string }[]).map((v) => v.label),
+            );
+          }}
+        />
+      </div>
 
       <div
         onClick={callAddTagModal}

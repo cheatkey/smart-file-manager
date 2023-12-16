@@ -49,6 +49,7 @@ export const selectDarkStyle: StylesConfig = {
     return {
       ...styles,
       backgroundColor: tailwindColor.dark[700],
+      cursor: 'pointer',
     };
   },
   multiValueLabel: (styles, { data }) => ({

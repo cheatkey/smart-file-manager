@@ -3,4 +3,5 @@ export const queryKeys = {
   getFileInfo: (id: number | null) => ['fileInfo', id],
   getAllTag: ['getAllTag'],
   getSimilarThumbnails: (id: number | null) => ['getSimilarThumbnails', id],
+  getTagFiles: (tagName: string) => ['getTagFiles', tagName],
 };
