@@ -1,22 +1,6 @@
 import React from 'react';
 import { FileIcon } from '../../../../assets/Icon';
 
-export const ImageBackgroundBackground = ({
-  isHover,
-  thumbnail,
-}: {
-  isHover: boolean;
-  thumbnail: string;
-}) => (
-  <img
-    className={`w-full h-full object-cover transition-transform ${
-      isHover ? 'scale-105' : ''
-    }`}
-    alt="thumbnail"
-    src={thumbnail}
-  ></img>
-);
-
 export const FileExtensionBackground = ({
   isHover,
   extension,

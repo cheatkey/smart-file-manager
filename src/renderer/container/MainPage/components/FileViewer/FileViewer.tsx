@@ -8,6 +8,7 @@ import {
 } from './FileBackground';
 import { useClickHandler } from './hooks/useClickHandler';
 import { useSelectedFileViewer } from '../../../SelectedFileViewer/hooks/store/useSelectedFileViewer';
+import FadeImage from '../FileListViewer/FadeImage';
 
 interface IFileViewerProps {
   id: number;
@@ -52,10 +53,7 @@ const FileViewer = ({
       }}
     >
       {hasThumbnail ? (
-        <ImageBackgroundBackground
-          isHover={isHover}
-          thumbnail={thumbnails[0]}
-        />
+        <FadeImage isHover={isHover} thumbnails={thumbnails} />
       ) : (
         <p className="p-4">
           <FileExtensionBackground extension={extension} isHover={isHover} />
