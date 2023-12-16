@@ -139,6 +139,15 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
             <DrawerIcon.ThumbnailSearch />
           </div>
 
+          <div
+            className={iconWrapper}
+            onClick={() => {
+              navigate(`/search-tag-similar/${fileID}`);
+            }}
+          >
+            <DrawerIcon.SearchSimilarTags />
+          </div>
+
           <div className={iconWrapper}>
             <DrawerIcon.History />
           </div>

@@ -79,7 +79,56 @@ const moveThumbnailImage = async (
   return thumbnailFileList;
 };
 
+const intersection = (a: string[], b: string[]) =>
+  a.filter((value) => b.includes(value));
+
 export const ipcController = {
+  findTagSimilar: ipcFunction(
+    z.object({
+      id: z.number(),
+    }),
+    async (input) => {
+      const data = await repository.getFile(input.id);
+      const targetTags = data?.tags.map((v) => v.tagName);
+      if (isNil(targetTags) || targetTags.length === 0)
+        throw new Error('대상 태그가 지정되지 않음');
+
+      const allFile = await repository.getAllFiles.includeTags();
+
+      const thumbnailPath = getStorePath().thumbnailPath;
+
+      return allFile
+        .reduce<
+          {
+            id: number;
+            score: number;
+            fileName: string;
+            thumbnails: string[];
+          }[]
+        >((acc, cur) => {
+          const tagIntersection = intersection(
+            targetTags,
+            cur.tags.map((v) => v.tagName),
+          );
+          const hasIntersection = tagIntersection.length > 0;
+          if (!hasIntersection) return acc;
+
+          const intersectionPercentage =
+            (tagIntersection.length / targetTags.length) * 100;
+
+          acc.push({
+            id: cur.id,
+            score: intersectionPercentage,
+            fileName: cur.fileName,
+            thumbnails: (JSON.parse(cur?.thumbnails ?? '[]') as string[]).map(
+              (fileName) => getBase64Image(`${thumbnailPath}/${fileName}`),
+            ),
+          });
+          return acc;
+        }, [])
+        .sort((a, b) => b.score - a.score);
+    },
+  ),
   findTagFiles: ipcFunction(
     z.object({
       tagName: z.string(),
@@ -244,7 +293,7 @@ export const ipcController = {
     repository.getAllTagList(),
   ),
   getAllFiles: ipcFunction(z.object({}), async () => {
-    const files = await repository.getAllFiles();
+    const files = await repository.getAllFiles.includeActivity();
 
     const thumbnailPath = getStorePath().thumbnailPath;
 

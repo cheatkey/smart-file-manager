@@ -36,6 +36,7 @@ module.exports = {
     'react/jsx-no-useless-fragment': 'off',
     'jsx-a11y/no-noninteractive-element-interactions': 'off',
     'react/require-default-props': 'off',
+    'react/no-unescaped-entities': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,

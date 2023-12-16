@@ -5,6 +5,7 @@ import Sidebar from './layout/Sidebar';
 import SelectedFileViewer from './container/SelectedFileViewer/SelectedFileViewer';
 import SearchSimilarPage from './container/Search/SearchSimilar/SearchSimilarPage';
 import SearchTagFilesPage from './container/Search/SearchTag/SearchTagFilesPage';
+import SearchTagSimilarPage from './container/Search/SearchTagSimilar/SearchTagSimilarPage';
 
 const App = () => {
   return (
@@ -19,6 +20,10 @@ const App = () => {
             <Route
               path="/search-tag/:tagName"
               element={<SearchTagFilesPage />}
+            />
+            <Route
+              path="/search-tag-similar/:id"
+              element={<SearchTagSimilarPage />}
             />
           </Routes>
         </div>

@@ -91,17 +91,28 @@ export const repository = {
     });
   },
 
-  getAllFiles: () =>
-    prisma.file.findMany({
-      include: {
-        activity: {
-          orderBy: {
-            id: 'desc',
+  getAllFiles: {
+    includeActivity: () =>
+      prisma.file.findMany({
+        include: {
+          activity: {
+            orderBy: {
+              id: 'desc',
+            },
+            take: 1,
           },
-          take: 1,
         },
-      },
-    }),
+      }),
+    includeTags: () =>
+      prisma.file.findMany({
+        select: {
+          id: true,
+          tags: true,
+          thumbnails: true,
+          fileName: true,
+        },
+      }),
+  },
 
   updateFile: async (
     id: number,

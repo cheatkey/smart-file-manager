@@ -28,6 +28,24 @@ export const FileViewerIcon = {
 };
 
 export const DrawerIcon = {
+  SearchSimilarTags: () => (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g fill="none">
+        <path
+          stroke="#e7e5e4"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M4 10.586V5a1 1 0 0 1 1-1h5.586a1 1 0 0 1 .707.293l8.5 8.5a1 1 0 0 1 0 1.414l-5.586 5.586a1 1 0 0 1-1.414 0l-8.5-8.5A1 1 0 0 1 4 10.586z"
+        />
+        <circle cx="8.5" cy="8.5" r="1.5" fill="#e7e5e4" />
+      </g>
+    </svg>
+  ),
   ThumbnailSearch: () => (
     <svg
       width="28"
