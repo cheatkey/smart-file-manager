@@ -58,3 +58,46 @@
   -webkit-animation: spin 1s linear infinite;
   animation: spin 1s linear infinite;
 }
+
+.swal2-popup.swal2-modal.swal2-show {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.125);
+
+  border-radius: 10px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.swal2-input {
+  height: 35px;
+  color: white;
+  font-size: 16px;
+}
+
+.swal2-input:focus {
+  box-shadow: none;
+  border: none;
+}
+
+.swal2-title {
+  color: #f5f5f4;
+  font-size: 24px;
+  font-weight: 800;
+  padding-top: 25px;
+}
+
+.swal2-confirm.swal2-styled {
+  background-color: #2563eb;
+  padding: 7px 17px;
+}
+
+.swal2-cancel.swal2-styled {
+  padding: 7px 17px;
+}
+
+.swal2-actions {
+  display: flex;
+  flex-direction: row-reverse;
+}
