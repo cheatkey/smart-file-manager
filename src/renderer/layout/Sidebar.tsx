@@ -1,6 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LeftSidebarIcon } from '../assets/Icon';
+import Swal from 'sweetalert2';
+import { ElectronStoreKeyType } from '../../main/main';
+import { openSaveSettingModal } from './utils/openSaveSettingModal';
 
 interface ISidebarProps {}
 
@@ -53,7 +56,7 @@ const Sidebar = ({}: ISidebarProps) => {
       </div>
 
       <div className="h-1/6 flex flex-col items-center justify-end">
-        <div className={iconWrapper}>
+        <div className={iconWrapper} onClick={openSaveSettingModal}>
           <LeftSidebarIcon.Setting />
         </div>
       </div>

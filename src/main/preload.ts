@@ -2,18 +2,19 @@
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { IPC_CONTROLLER_TYPE } from './ipcController';
+import { ElectronStoreKeyType } from './main';
 
 export type Channels = 'ipc-example' | 'call-main-function';
 
 const electronHandler = {
   store: {
-    has(key: string) {
+    has(key: ElectronStoreKeyType) {
       return ipcRenderer.sendSync('electron-store-has', key);
     },
-    get(key: string) {
+    get(key: ElectronStoreKeyType) {
       return ipcRenderer.sendSync('electron-store-get', key);
     },
-    set(property: string, val: any) {
+    set(property: ElectronStoreKeyType, val: any) {
       ipcRenderer.send('electron-store-set', property, val);
     },
     // Other method you want to add like has(), reset(), etc.
