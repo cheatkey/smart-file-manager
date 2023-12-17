@@ -175,13 +175,6 @@ export class FileService {
         z.object({
           path: z.string(),
           fileName: z.string(),
-          thumbnails: z.array(
-            z.object({
-              path: z.string(),
-              fileName: z.string(),
-            }),
-          ),
-          tags: z.array(z.string()),
         }),
       ),
     }),
@@ -201,10 +194,6 @@ export class FileService {
             afterFileName,
           });
 
-          const thumbnailFileList = await moveThumbnailImagePath(
-            item.thumbnails,
-          );
-
           return repository.createFile({
             storedName: afterFileName,
             createdAt: new Date(),
@@ -215,7 +204,7 @@ export class FileService {
             fileSize,
             rating: 5,
             connect: {
-              thumbnails: thumbnailFileList,
+              thumbnails: [],
             },
           });
         }),

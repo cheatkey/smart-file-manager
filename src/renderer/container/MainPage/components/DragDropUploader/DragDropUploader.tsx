@@ -1,62 +1,49 @@
+import { useQueryClient } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useToggle } from 'react-use';
-import { nanoid } from 'nanoid';
-import { useElectronStore } from '../../../../utils/hooks/useStore';
-import { useUploadStore } from '../../hooks/store/useUploadStore';
-import UploadPage from './UploadPage';
-
-// const useAddFiles = () => {
-//   const [savePath, setSavePath] = useElectronStore<string>('SAVE_PATH', '');
-//   const [thumbnailPath, setThumbnailPath] = useElectronStore<string>(
-//     'THUMBNAIL_PATH',
-//     '',
-//   );
-//   const [isLoading, setIsLoading] = useToggle(false);
-//   useEffect(() => {
-//     setSavePath('/media/cheat/새 볼륨/explorer/files');
-//     setThumbnailPath('/media/cheat/새 볼륨/explorer/thumbnails');
-//   }, []);
-
-//   const onHandleDrop = async (files: File[]) => {
-//     setIsLoading(true);
-//     const result = await window.electron.ipcRenderer.invoke('addNewFiles', {
-//       sourceFiles: files.map((v) => ({
-//         path: v.path,
-//         fileName: v.name,
-//       })),
-//       storePath: savePath,
-//     });
-
-//     if (!result.success) alert('fail');
-
-//     setIsLoading(false);
-//   };
-
-//   return { isLoading, onHandleDrop };
-// };
+import toast from 'react-hot-toast';
+import { queryKeys } from '../../../../utils/queryKeys';
+import { DragScreenIcon } from '../../../../assets/Icon';
 
 interface IDragDropUploaderProps {
   children: React.ReactNode;
 }
 
 const DragDropUploader = ({ children }: IDragDropUploaderProps) => {
-  const files = useUploadStore((state) => state.files);
-  const setFiles = useUploadStore((state) => state.setFiles);
+  const queryClient = useQueryClient();
   const { getRootProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) =>
-      setFiles(
-        acceptedFiles.map((v) => ({
+    onDrop: async (acceptedFiles) => {
+      const loadingMessage = (() => {
+        if (acceptedFiles.length === 1) {
+          return acceptedFiles[0].name;
+        }
+
+        return `${acceptedFiles[0].name} 외 ${acceptedFiles.length - 1}건`;
+      })();
+
+      const toastId = toast.loading(`${loadingMessage} 파일 저장 중`);
+
+      const result = await window.electron.ipcRenderer.invoke('addNewFiles', {
+        files: acceptedFiles.map((v) => ({
           path: v.path,
-          name: v.name,
+          fileName: v.name,
         })),
-      ),
+      });
+
+      toast.dismiss(toastId);
+
+      if (result.success) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.getFileList,
+        });
+        toast.success('파일 추가 성공');
+      } else {
+        toast.error('파일 추가 실패');
+      }
+    },
+
     noClick: true,
   });
-
-  if (files.length > 0) {
-    return <UploadPage />;
-  }
 
   return (
     <div
@@ -64,17 +51,12 @@ const DragDropUploader = ({ children }: IDragDropUploaderProps) => {
       {...getRootProps()}
     >
       {isDragActive && (
-        <div className="min-h-screen min-w-full backdrop-blur-sm absolute top-0 left-0 z-10 flex items-center justify-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            className="w-12 bounce"
-          >
-            <path
-              d="M3 19H21V21H3V19ZM13 5.82843V17H11V5.82843L4.92893 11.8995L3.51472 10.4853L12 2L20.4853 10.4853L19.0711 11.8995L13 5.82843Z"
-              fill="#006FEE"
-            ></path>
-          </svg>
+        <div className="fixed flex-col gap-1 bounce min-h-screen min-w-full backdrop-blur-sm top-0 left-0 z-50 flex items-center justify-center">
+          <DragScreenIcon.FileUpload />
+
+          <p className="font-bold text-stone-600 text-base">
+            드래그&드롭으로 파일을 추가해주세요
+          </p>
         </div>
       )}
 

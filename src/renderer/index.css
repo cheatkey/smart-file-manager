@@ -20,7 +20,7 @@
   }
 }
 .bounce {
-  animation: bounce 2s linear infinite;
+  animation: bounce 1.2s linear infinite;
 }
 
 @font-face {
