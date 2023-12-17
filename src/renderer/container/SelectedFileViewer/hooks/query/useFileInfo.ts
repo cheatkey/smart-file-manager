@@ -109,6 +109,10 @@ export const useFileInfo = (id: number | null) => {
         fileID: id,
       });
       toast.success('파일 삭제 완료');
+
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.getFileList,
+      });
     },
     addNewVersionFile: async (item: { path: string; fileName: string }) => {
       await mutateAsync({
