@@ -6,4 +6,6 @@ export const queryKeys = {
   getTagFiles: (tagName: string) => ['getTagFiles', tagName],
   getSimilarTags: (id: number | null) => ['getSimilarTags', id],
   SearchSimilarMemo: (id: number | null) => ['SearchSimilarMemo', id],
+  getRecommendedFileIDList: ['getRecommendedFileIDList'],
+  getRecommendedFiles: ['getRecommendedFiles'],
 };

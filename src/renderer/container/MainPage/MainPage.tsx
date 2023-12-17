@@ -8,12 +8,14 @@ import { useFileList } from './hooks/query/useFileList';
 import TileFileViewer from './components/FileListViewer/TileFileViewer';
 import TableFileViewer from './components/FileListViewer/TableFileViewer';
 import { FileViewerIcon } from '../../assets/Icon';
+import { useRecommendFiles } from './hooks/query/useRecommendFiles';
 
 interface IAddFilesPageProps {}
 
 const MainPage = ({}: IAddFilesPageProps) => {
   const fileList = useFileList();
   const [isGridView, setIsGridView] = useToggle(true);
+  const { recommendedFiles } = useRecommendFiles();
 
   return (
     <DragDropUploader>
@@ -24,9 +26,11 @@ const MainPage = ({}: IAddFilesPageProps) => {
           </h1>
 
           <div className="grid grid-cols-3 gap-4 w-full">
-            {fileList.data?.map((v, index) => (
+            {recommendedFiles?.map((v, index) => (
               <div
-                className={`h-56 ${[1, 2].includes(index) ? 'col-span-2' : ''}`}
+                className={`h-56 ${
+                  [1, 2, 5, 6, 9].includes(index) ? 'col-span-2' : ''
+                }`}
               >
                 <FileViewer
                   id={v.id}

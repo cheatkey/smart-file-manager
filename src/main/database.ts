@@ -92,7 +92,16 @@ export const repository = {
   },
 
   getAllFiles: {
-    default: () => prisma.file.findMany({}),
+    default: (filesID?: number[]) => {
+      if (isNil(filesID)) return prisma.file.findMany({});
+      return prisma.file.findMany({
+        where: {
+          OR: filesID.map((v) => ({
+            id: v,
+          })),
+        },
+      });
+    },
     includeActivity: () =>
       prisma.file.findMany({
         include: {
@@ -222,6 +231,23 @@ export const repository = {
                 connect: payload.connect.tags.map((tag) => ({ id: tag })),
               }
             : {},
+      },
+    });
+  },
+
+  getRecentActivity: () => {
+    return prisma.activity.findMany({
+      orderBy: {
+        date: 'desc',
+      },
+      take: 5,
+      include: {
+        File: {
+          select: {
+            metadata: true,
+            tags: true,
+          },
+        },
       },
     });
   },

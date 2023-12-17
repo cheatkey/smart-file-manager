@@ -140,6 +140,19 @@ export class FileService {
     },
   );
 
+  public getManyFile = ipcFunction(
+    z.object({
+      idList: z.array(z.number()),
+    }),
+    async (input) => {
+      const files = await repository.getAllFiles.default(input.idList);
+      return files.map((v) => ({
+        ...omit(v, 'thumbnails'),
+        thumbnails: getBase64Images(v.thumbnails),
+      }));
+    },
+  );
+
   public getAllFiles = ipcFunction(z.object({}), async () => {
     const files = await repository.getAllFiles.includeActivity();
 
