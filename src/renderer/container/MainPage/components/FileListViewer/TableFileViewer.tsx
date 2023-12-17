@@ -1,4 +1,5 @@
 import {
+  Row,
   SortingState,
   createColumnHelper,
   flexRender,
@@ -22,6 +23,7 @@ type FileDataType = {
     date: Date;
     fileId: number | null;
   }[];
+  rating: number;
   createdAt: Date;
 };
 
@@ -68,6 +70,16 @@ const columns = [
     },
   }),
 
+  columnHelper.accessor('rating', {
+    header: () => '점수',
+    size: 70,
+    cell: (info) => info.renderValue(),
+    enableSorting: true,
+    sortingFn: (a, b, columnID) => {
+      return Number(b.getValue(columnID)) - Number(a.getValue(columnID));
+    },
+  }),
+
   columnHelper.accessor('activity', {
     header: () => '최근 조회',
     size: 100,
@@ -78,10 +90,13 @@ const columns = [
     },
     enableSorting: true,
     sortingFn: (a, b, columnID) => {
-      return (
-        ((a as any).getValue(columnID)?.[0]?.date as Date).getTime() -
-        ((b as any).getValue(columnID)?.[0]?.date as Date).getTime()
-      );
+      const getTime = (row: Row<FileDataType>) => {
+        return (
+          ((row as any).getValue(columnID)?.[0]?.date as Date)?.getTime() ??
+          Infinity
+        );
+      };
+      return getTime(b) - getTime(a);
     },
   }),
 ];

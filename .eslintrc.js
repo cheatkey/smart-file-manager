@@ -38,6 +38,7 @@ module.exports = {
     'react/require-default-props': 'off',
     'react/no-unescaped-entities': 'off',
     'import/no-cycle': 'off',
+    'no-unsafe-optional-chaining': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,
