@@ -74,6 +74,20 @@
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
+.swal2-popup.swal2-modal {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.125);
+
+  border-radius: 10px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.swal2-popup.swal2-modal label {
+  color: white;
+}
+
 .swal2-input {
   height: 35px;
   color: white;
@@ -82,7 +96,7 @@
 
 .swal2-input:focus {
   box-shadow: none;
-  border: none;
+  /* border: none; */
 }
 
 .swal2-title {
@@ -104,4 +118,16 @@
 .swal2-actions {
   display: flex;
   flex-direction: row-reverse;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 0 1px rgba(217, 217, 217, 0.75);
 }
