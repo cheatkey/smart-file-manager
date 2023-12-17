@@ -1,11 +1,8 @@
 import React, { useRef } from 'react';
 import { useHoverDirty } from 'react-use';
-import { CardFotterIcon, FileIcon } from '../../../../assets/Icon';
+import { FileIcon } from '../../../../assets/Icon';
 import { useElectronStore } from '../../../../utils/hooks/useStore';
-import {
-  FileExtensionBackground,
-  ImageBackgroundBackground,
-} from './FileBackground';
+import { FileExtensionBackground } from './FileBackground';
 import { useClickHandler } from './hooks/useClickHandler';
 import { useSelectedFileViewer } from '../../../SelectedFileViewer/hooks/store/useSelectedFileViewer';
 import FadeImage from '../FileListViewer/FadeImage';
@@ -55,9 +52,11 @@ const FileViewer = ({
       {hasThumbnail ? (
         <FadeImage isHover={isHover} thumbnails={thumbnails} />
       ) : (
-        <p className="p-4">
-          <FileExtensionBackground extension={extension} isHover={isHover} />
-        </p>
+        <div className="p-6">
+          <div className="w-20 h-20 flex items-center justify-center bg-white rounded-3xl default-shadow">
+            <FileExtensionBackground extension={extension} isHover={isHover} />
+          </div>
+        </div>
       )}
       <div
         className="absolute z-10 w-full h-16 border-t-2 border-stone-50/30"

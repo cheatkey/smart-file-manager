@@ -10,16 +10,40 @@ export const FileExtensionBackground = ({
 }) => {
   const lowerExtension = extension.toLowerCase();
 
-  const IconElement = (() => {
-    if (['csv', 'xlsx'].includes(lowerExtension)) return FileIcon.Excel;
-    if (['ppt'].includes(lowerExtension)) return FileIcon.Ppt;
-    if (['docs'].includes(lowerExtension)) return FileIcon.Word;
-    if (['jpg', 'png', 'gif', 'jpeg'].includes(lowerExtension))
-      return FileIcon.Image;
-    if (['mp4'].includes(lowerExtension)) return FileIcon.Video;
+  const ExtensionIcon = (() => {
+    if (['csv', 'xlsx'].includes(lowerExtension))
+      return {
+        ml: -6,
+        Element: FileIcon.Excel,
+      };
+    if (['ppt'].includes(lowerExtension))
+      return {
+        ml: -6,
+        Element: FileIcon.Ppt,
+      };
+    if (['docs'].includes(lowerExtension))
+      return {
+        ml: -6,
+        Element: FileIcon.Word,
+      };
+    if (['jpg', 'png', 'gif', 'jpeg', 'svg'].includes(lowerExtension))
+      return {
+        ml: 0,
+        Element: FileIcon.Image,
+      };
+    if (['mp4'].includes(lowerExtension))
+      return {
+        ml: 0,
+        Element: FileIcon.Video,
+      };
+    if (['pdf'].includes(lowerExtension))
+      return {
+        ml: 0,
+        Element: FileIcon.Docs,
+      };
   })();
 
-  if (IconElement)
+  if (ExtensionIcon)
     return (
       <div
         className="transition-transform"
@@ -27,11 +51,14 @@ export const FileExtensionBackground = ({
           isHover
             ? {
                 transform: 'translateX(0.5%) scale(1.03)',
+                marginLeft: `${ExtensionIcon.ml}px`,
               }
-            : {}
+            : {
+                marginLeft: `${ExtensionIcon.ml}px`,
+              }
         }
       >
-        <IconElement />
+        <ExtensionIcon.Element />
       </div>
     );
 };

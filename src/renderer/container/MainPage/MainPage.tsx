@@ -45,26 +45,22 @@ const MainPage = ({}: IAddFilesPageProps) => {
               모든 파일
             </h1>
 
-            <div className="flex flex-row overflow-hidden items-center rounded-xl gap-1 bg-stone-50">
+            <div className="flex flex-row overflow-hidden items-center rounded-xl gap-1 bg-stone-50 px-2 py-1">
               <div
+                className="cursor-pointer"
                 onClick={() => {
                   setIsGridView(true);
                 }}
-                className={`bg-stone-50 pl-2 py-1 ${
-                  isGridView && 'bg-stone-200'
-                }`}
               >
-                <FileViewerIcon.Grid />
+                <FileViewerIcon.Grid isSelected={isGridView === true} />
               </div>
               <div
+                className="cursor-pointer pr-1"
                 onClick={() => {
                   setIsGridView(false);
                 }}
-                className={`bg-stone-50 pl-1 pr-2 py-1 ${
-                  !isGridView ? 'bg-stone-200' : ''
-                }`}
               >
-                <FileViewerIcon.List />
+                <FileViewerIcon.List isSelected={isGridView === false} />
               </div>
             </div>
           </div>

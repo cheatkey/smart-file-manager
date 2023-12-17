@@ -53,6 +53,10 @@
   }
 }
 
+.default-shadow {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
 .loader {
   border-top-color: #60a5fa;
   -webkit-animation: spin 1s linear infinite;
