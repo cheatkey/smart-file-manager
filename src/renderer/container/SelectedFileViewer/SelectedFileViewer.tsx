@@ -13,6 +13,7 @@ import TagSelector from './components/TagSelector';
 import JsonEditTable from './components/JsonEditTable';
 import AddDragFile from './components/AddDragFile';
 import { useNavigate } from 'react-router-dom';
+import Tooltip from '../../components/Tooltip';
 
 const iconWrapper =
   'w-11 h-11 bg-stone-800 rounded-2xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform';
@@ -119,51 +120,57 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
         </div>
 
         <div className="flex flex-row gap-2">
-          <div
-            className={iconWrapper}
-            onClick={() => {
-              window.electron.ipcRenderer.invoke('openFile', {
-                id: data.id,
-              });
-            }}
-          >
-            <DrawerIcon.Click />
-          </div>
+          <Tooltip content="파일 열기">
+            <div
+              className={iconWrapper}
+              onClick={() => {
+                window.electron.ipcRenderer.invoke('openFile', {
+                  id: data.id,
+                });
+              }}
+            >
+              <DrawerIcon.Click />
+            </div>
+          </Tooltip>
 
-          <div
-            className={iconWrapper}
-            onClick={() => {
-              navigate(`/search/${fileID}`);
-            }}
-          >
-            <DrawerIcon.ThumbnailSearch />
-          </div>
+          <Tooltip content="썸네일이 비슷한 파일 검색">
+            <div
+              className={iconWrapper}
+              onClick={() => {
+                navigate(`/search/${fileID}`);
+              }}
+            >
+              <DrawerIcon.ThumbnailSearch />
+            </div>
+          </Tooltip>
 
-          <div
-            className={iconWrapper}
-            onClick={() => {
-              navigate(`/search-tag-similar/${fileID}`);
-            }}
-          >
-            <DrawerIcon.SearchSimilarTags />
-          </div>
+          <Tooltip content="태그가 비슷한 파일 검색">
+            <div
+              className={iconWrapper}
+              onClick={() => {
+                navigate(`/search-tag-similar/${fileID}`);
+              }}
+            >
+              <DrawerIcon.SearchSimilarTags />
+            </div>
+          </Tooltip>
 
-          <div
-            className={iconWrapper}
-            onClick={() => {
-              navigate(`/search-memo/${fileID}`);
-            }}
-          >
-            <DrawerIcon.SearchMemo />
-          </div>
+          <Tooltip content="메모가 비슷한 파일 검색">
+            <div
+              className={iconWrapper}
+              onClick={() => {
+                navigate(`/search-memo/${fileID}`);
+              }}
+            >
+              <DrawerIcon.SearchMemo />
+            </div>
+          </Tooltip>
 
-          <div className={iconWrapper}>
-            <DrawerIcon.Group />
-          </div>
-
-          <div className={iconWrapper} onClick={callDeleteConfirmModal}>
-            <DrawerIcon.Trash />
-          </div>
+          <Tooltip content="파일 삭제">
+            <div className={iconWrapper} onClick={callDeleteConfirmModal}>
+              <DrawerIcon.Trash />
+            </div>
+          </Tooltip>
         </div>
 
         <section className="flex flex-col">
