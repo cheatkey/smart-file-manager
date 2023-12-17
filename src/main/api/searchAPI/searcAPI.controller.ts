@@ -8,6 +8,7 @@ import {
   ipcFunction,
 } from '../utils';
 import isNil from 'lodash/isNil';
+import get from 'lodash/get';
 import { repository } from '../../database';
 import { load as encoderLoad } from '@tensorflow-models/universal-sentence-encoder';
 import omit from 'lodash/omit';
@@ -191,6 +192,25 @@ export class SearchService {
           thumbnails: getBase64Images(v.thumbnails),
         })),
       };
+    },
+  );
+
+  findMeataDataEqual = ipcFunction(
+    z.object({
+      key: z.string(),
+      value: z.string(),
+    }),
+    async (input) => {
+      const allFiles = await repository.getAllFiles.default();
+
+      const matchedFiles = allFiles.filter((file) => {
+        return get(JSON.parse(file.metadata), input.key) === input.value;
+      });
+
+      return matchedFiles.map((v) => ({
+        ...omit(v, 'thumbnails'),
+        thumbnails: getBase64Images(v.thumbnails),
+      }));
     },
   );
 }
