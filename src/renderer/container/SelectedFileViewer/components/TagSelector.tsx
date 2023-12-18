@@ -35,13 +35,26 @@ const TagSelector = ({ initialValue, handleChangeTags }: ITagSelectorProps) => {
     });
   };
 
+  const getMultiCheckValue = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    try {
+      const clickedElement = e.target as unknown as Element;
+      if (clickedElement?.className?.includes('MultiValueGeneric')) {
+        return clickedElement.innerHTML.trim();
+      }
+    } catch (err) {
+      return null;
+    }
+  };
+
   return (
     <div className="flex flex-row gap-2 items-center">
       <div
         onClick={(e) => {
-          const clickedElement = e.target as unknown as Element;
-          if (clickedElement?.className?.includes('MultiValueGeneric')) {
-            navigate(`/search-tag/${clickedElement.innerHTML.trim()}`);
+          const tagName = getMultiCheckValue(e);
+          if (tagName) {
+            navigate(`/search-tag/${tagName}`);
           }
         }}
       >
