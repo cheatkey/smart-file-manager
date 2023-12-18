@@ -6,7 +6,7 @@ import DragDropUploader from './components/DragDropUploader/DragDropUploader';
 import FileViewer from './components/FileViewer/FileViewer';
 import { useFileList } from './hooks/query/useFileList';
 import TileFileViewer from './components/FileListViewer/TileFileViewer';
-import TableFileViewer from './components/FileListViewer/TableFileViewer';
+import TableFileViewer from './components/FileListViewer/TableFileViewer/TableFileViewer';
 import { FileViewerIcon } from '../../assets/Icon';
 import { useRecommendFiles } from './hooks/query/useRecommendFiles';
 

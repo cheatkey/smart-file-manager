@@ -16,7 +16,7 @@ const SearchInput = ({}: ISearchInputProps) => {
     <div ref={wrapperRef} className="relative flex flex-col gap-4">
       <div
         onClick={() => setIsFocusd(true)}
-        className={`rounded-xl h-12 flex flex-row items-center justify-center px-4 gap-2 cursor-pointer transition-all w-[800px] ${
+        className={`rounded-xl h-12 flex flex-row items-center justify-center px-4 gap-2 cursor-pointer transition-all w-[1000px] ${
           isFocused ? 'focused-shadow' : 'default-shadow'
         }`}
       >

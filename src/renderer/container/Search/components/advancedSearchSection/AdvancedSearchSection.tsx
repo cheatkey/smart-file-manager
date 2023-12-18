@@ -8,7 +8,10 @@ interface IAdvancedSearchSectionProps {
 }
 const AdvancedSearchSection = ({ isFocused }: IAdvancedSearchSectionProps) => {
   const { data: tagList } = useTagList();
-  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [similarSearchMethod, setSimilarSearchMethod] = useState<
+    'tags' | 'memo' | 'thumbnail' | null
+  >(null);
+  const pageIndex = similarSearchMethod === null ? 0 : 1;
 
   const FirstPageJSX = (
     <div className="p-4 flex flex-col">
@@ -33,19 +36,19 @@ const AdvancedSearchSection = ({ isFocused }: IAdvancedSearchSectionProps) => {
         <div className="flex flex-col gap-2">
           <span
             className={nextPageMoveClassName}
-            onClick={() => setPageIndex(1)}
+            onClick={() => setSimilarSearchMethod('memo')}
           >
             {'메모 텍스트 유사도 검색 >'}
           </span>
           <span
             className={nextPageMoveClassName}
-            onClick={() => setPageIndex(1)}
+            onClick={() => setSimilarSearchMethod('tags')}
           >
             {'태그 유사도 검색 >'}
           </span>
           <span
             className={nextPageMoveClassName}
-            onClick={() => setPageIndex(1)}
+            onClick={() => setSimilarSearchMethod('thumbnail')}
           >
             {'썸네일 이미지 유사도 검색 >'}
           </span>
@@ -57,7 +60,15 @@ const AdvancedSearchSection = ({ isFocused }: IAdvancedSearchSectionProps) => {
   return (
     <ControlPanel
       isFocused={isFocused}
-      pages={[FirstPageJSX, <FileSelectorTable />]}
+      pages={[
+        FirstPageJSX,
+        <FileSelectorTable
+          navigateTarget={similarSearchMethod}
+          moveToPrev={() => {
+            setSimilarSearchMethod(null);
+          }}
+        />,
+      ]}
       pageIndex={pageIndex}
     />
   );
