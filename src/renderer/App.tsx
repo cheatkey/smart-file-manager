@@ -7,6 +7,7 @@ import SearchSimilarPage from './container/Search/SearchSimilar/SearchSimilarPag
 import SearchTagFilesPage from './container/Search/SearchTag/SearchTagFilesPage';
 import SearchTagSimilarPage from './container/Search/SearchTagSimilar/SearchTagSimilarPage';
 import SearchSimilarMemo from './container/Search/SearchSimilarMemo/SearchSimilarMemo';
+import SearchPage from './container/Search/SearchPage';
 
 const App = () => {
   return (
@@ -17,6 +18,8 @@ const App = () => {
         <div className="pl-16 w-full">
           <Routes>
             <Route path="/" element={<MainPage />} />
+            <Route path="/search" element={<SearchPage />} />
+
             <Route path="/search/:id" element={<SearchSimilarPage />} />
             <Route
               path="/search-tag/:tagName"

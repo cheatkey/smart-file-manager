@@ -30,24 +30,6 @@ const Sidebar = ({}: ISidebarProps) => {
         <div
           className={iconWrapper}
           onClick={() => {
-            navigate('/history');
-          }}
-        >
-          <LeftSidebarIcon.History />
-        </div>
-
-        <div
-          className={iconWrapper}
-          onClick={() => {
-            navigate('/activity');
-          }}
-        >
-          <LeftSidebarIcon.Activity />
-        </div>
-
-        <div
-          className={iconWrapper}
-          onClick={() => {
             navigate('/search');
           }}
         >
