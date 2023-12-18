@@ -3,7 +3,7 @@ import { FileIcon } from '../../../../assets/Icon';
 
 export const FileExtensionBackground = ({
   isHover,
-  extension,
+  extension = '',
 }: {
   isHover: boolean;
   extension: string;
