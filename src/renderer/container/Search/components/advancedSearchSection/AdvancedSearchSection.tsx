@@ -6,11 +6,15 @@ import { useNavigate } from 'react-router-dom';
 
 interface IAdvancedSearchSectionProps {
   isFocused: boolean;
+  setIsFocusd: (payload: boolean) => void;
 }
-const AdvancedSearchSection = ({ isFocused }: IAdvancedSearchSectionProps) => {
+const AdvancedSearchSection = ({
+  isFocused,
+  setIsFocusd,
+}: IAdvancedSearchSectionProps) => {
   const { data: tagList } = useTagList();
   const [similarSearchMethod, setSimilarSearchMethod] = useState<
-    'tag' | 'memo' | 'thumbnail' | null
+    'tag' | 'memo' | 'thumbnail' | 'metadata' | null
   >(null);
   const navigate = useNavigate();
   const pageIndex = similarSearchMethod === null ? 0 : 1;
@@ -53,6 +57,12 @@ const AdvancedSearchSection = ({ isFocused }: IAdvancedSearchSectionProps) => {
           </span>
           <span
             className={nextPageMoveClassName}
+            onClick={() => setSimilarSearchMethod('metadata')}
+          >
+            {'메타데이터 유사도 검색 >'}
+          </span>
+          <span
+            className={nextPageMoveClassName}
             onClick={() => setSimilarSearchMethod('thumbnail')}
           >
             {'썸네일 이미지 유사도 검색 >'}
@@ -74,6 +84,9 @@ const AdvancedSearchSection = ({ isFocused }: IAdvancedSearchSectionProps) => {
           navigateTarget={similarSearchMethod}
           moveToPrev={() => {
             setSimilarSearchMethod(null);
+          }}
+          handleRowCallback={() => {
+            setIsFocusd(false);
           }}
         />,
       ]}

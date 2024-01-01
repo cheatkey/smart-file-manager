@@ -35,7 +35,7 @@ const SearchInput = ({}: ISearchInputProps) => {
         </svg>
         <input className="w-full h-full bg-transparent text-stone-950 focus:outline-none" />
       </div>
-      <AdvancedSearchSection isFocused={isFocused} />
+      <AdvancedSearchSection isFocused={isFocused} setIsFocusd={setIsFocusd} />
     </div>
   );
 };

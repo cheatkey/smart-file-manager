@@ -6,11 +6,13 @@ import { useNavigate } from 'react-router-dom';
 interface IFileSelectorTableProps {
   navigateTarget: string;
   moveToPrev: () => void;
+  handleRowCallback: () => void;
 }
 
 const FileSelectorTable = ({
   navigateTarget,
   moveToPrev,
+  handleRowCallback,
 }: IFileSelectorTableProps) => {
   const navigate = useNavigate();
   const fileList = useFileList();
@@ -27,6 +29,7 @@ const FileSelectorTable = ({
         data={fileList.data ?? []}
         handleClickRow={(row) => {
           navigate(`/search/similar/${navigateTarget}/${row.id}`);
+          handleRowCallback();
         }}
       />
     </div>

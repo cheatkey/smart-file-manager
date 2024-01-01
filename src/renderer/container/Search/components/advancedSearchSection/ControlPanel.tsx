@@ -19,7 +19,7 @@ const ControlPanel = ({
     <div
       className={`bg-stone-900 absolute z-50 rounded-xl default-shadow w-[1000px] flex flex-col transition-all duration-500 ease-in-out animate-expand overflow-x-hidden overflow-y-${
         uiOption.yScroll
-      } ${isFocused ? 'h-80' : 'h-0'}`}
+      } ${isFocused ? 'h-96' : 'h-0'}`}
       style={{
         top: 60,
       }}
