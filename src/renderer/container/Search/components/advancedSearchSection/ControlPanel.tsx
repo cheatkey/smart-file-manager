@@ -17,9 +17,12 @@ const ControlPanel = ({
 }: IControlPanelProps) => {
   return (
     <div
-      className={`bg-stone-900 relative rounded-xl default-shadow w-[1000px] flex flex-col transition-all duration-500 ease-in-out animate-expand overflow-x-hidden overflow-y-${
+      className={`bg-stone-900 absolute z-50 rounded-xl default-shadow w-[1000px] flex flex-col transition-all duration-500 ease-in-out animate-expand overflow-x-hidden overflow-y-${
         uiOption.yScroll
       } ${isFocused ? 'h-80' : 'h-0'}`}
+      style={{
+        top: 60,
+      }}
     >
       <div
         className="flex flex-col translate-x-0 transition-all duration-500 ease-in-out"

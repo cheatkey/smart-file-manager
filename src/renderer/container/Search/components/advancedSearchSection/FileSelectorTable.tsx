@@ -26,7 +26,7 @@ const FileSelectorTable = ({
       <TableFileViewer
         data={fileList.data ?? []}
         handleClickRow={(row) => {
-          navigate(`/similar-search/${navigateTarget}/${row.id}`);
+          navigate(`/search/similar/${navigateTarget}/${row.id}`);
         }}
       />
     </div>

@@ -38,7 +38,7 @@ const SearchSimilarMemo = ({}: ISearchSimilarMemoProps) => {
   const { data, isLoading } = useTagSimilarFiles(id);
 
   return (
-    <div className="flex flex-col p-6 gap-2 w-full">
+    <div className="flex flex-col gap-2 w-full">
       <h1 className="font-bold text-2xl tracking-tight text-stone-800">
         "{fileData?.fileName}" 과 비슷한 메모를 가진 파일 목록
       </h1>

@@ -133,11 +133,11 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
             </div>
           </Tooltip>
 
-          <Tooltip content="썸네일이 비슷한 파일 검색">
+          <Tooltip content="썸네일이 유사한 파일 검색">
             <div
               className={iconWrapper}
               onClick={() => {
-                navigate(`/search/${fileID}`);
+                navigate(`/search/similar/thumbnail/${fileID}`);
               }}
             >
               <DrawerIcon.ThumbnailSearch />
@@ -148,18 +148,18 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
             <div
               className={iconWrapper}
               onClick={() => {
-                navigate(`/search-tag-similar/${fileID}`);
+                navigate(`/search/similar/tag/${fileID}`);
               }}
             >
               <DrawerIcon.SearchSimilarTags />
             </div>
           </Tooltip>
 
-          <Tooltip content="메모가 비슷한 파일 검색">
+          <Tooltip content="메모가 유사한 파일 검색">
             <div
               className={iconWrapper}
               onClick={() => {
-                navigate(`/search-memo/${fileID}`);
+                navigate(`/search/similar/memo/${fileID}`);
               }}
             >
               <DrawerIcon.SearchMemo />

@@ -38,10 +38,10 @@ const SearchSimilarPage = ({}: ISearchSimilarPageProps) => {
     useGetSimilarThumbnails(id);
 
   return (
-    <div className="flex flex-col p-6 gap-2 w-full">
+    <div className="flex flex-col gap-2 w-full">
       <h1 className="font-bold text-2xl tracking-tight text-stone-800">
-        {isFileDataLoading ? '로딩중' : `"${fileData?.fileName}"`} 비슷한 썸네일
-        파일 검색
+        {isFileDataLoading ? '로딩중' : `"${fileData?.fileName}"`} 썸네일이
+        유사한 파일 검색
       </h1>
 
       {isSimilarLoading ? (

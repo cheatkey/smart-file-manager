@@ -54,7 +54,7 @@ const TagSelector = ({ initialValue, handleChangeTags }: ITagSelectorProps) => {
         onClick={(e) => {
           const tagName = getMultiCheckValue(e);
           if (tagName) {
-            navigate(`/search-tag/${tagName}`);
+            navigate(`/search/tag/${tagName}`);
           }
         }}
       >

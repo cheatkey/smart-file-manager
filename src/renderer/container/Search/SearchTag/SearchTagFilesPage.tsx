@@ -31,7 +31,7 @@ const SearchTagFilesPage = ({}: ISearchTagFilesPageProps) => {
   const { data, isLoading } = useTagFiles(tagName);
 
   return (
-    <div className="flex flex-col p-6 gap-2 w-full">
+    <div className="flex flex-col gap-2 w-full">
       <h1 className="font-bold text-2xl tracking-tight text-stone-800">
         "{tagName}" 태그를 가진 파일 목록
       </h1>

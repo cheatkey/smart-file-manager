@@ -40,24 +40,10 @@ const SearchTagSimilarPage = ({}: ISearchTagSimilarPageProps) => {
   const { data, isLoading } = useTagSimilarFiles(fileID);
 
   return (
-    <div className="flex flex-col p-6 gap-2 w-full">
+    <div className="flex flex-col gap-2 w-full">
       <h1 className="font-bold text-2xl tracking-tight text-stone-800">
         "{fileData?.fileName}" 파일과 유사한 태그를 가진 파일
       </h1>
-
-      <div className="flex flex-row gap-2 items-center">
-        {fileData?.tags.map((v) => (
-          <span
-            className="bg-stone-200 text-stone-800 rounded-lg py-1 px-2 text-sm cursor-pointer transition-colors hover:bg-stone-300"
-            key={v.id}
-            onClick={() => {
-              navigate(`/search-tag/${v.tagName}`);
-            }}
-          >
-            {v.tagName}
-          </span>
-        ))}
-      </div>
 
       {isLoading ? (
         <div className="flex w-full items-center justify-center h-96">
