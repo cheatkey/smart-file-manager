@@ -13,7 +13,6 @@ const JsonEditTable = ({
   onDebouncedChange,
   initialValue,
 }: IJsonEditTableProps) => {
-  console.log('initialValue:', initialValue);
   const [jsonData, setJsonData] = useImmer<string[][]>(
     Object.entries(initialValue),
   );
@@ -29,10 +28,10 @@ const JsonEditTable = ({
 
   return (
     <div className="flex flex-col w-full">
-      <table className="table-fixed w-full">
+      <table className="table-fixed w-full border-zinc-700 border-2">
         {jsonData.map(([key, value], index) => (
           <tr>
-            <td className="w-20">
+            <td className="w-20 border-zinc-700 border-2">
               <input
                 className="bg-transparent text-stone-50 w-full font-bold focus:outline-stone-500"
                 value={key}
@@ -43,7 +42,7 @@ const JsonEditTable = ({
                 }}
               />
             </td>
-            <td className="w-56">
+            <td className="w-56 border-zinc-700 border-2">
               <input
                 className="bg-transparent text-stone-50 w-full focus:outline-stone-500"
                 value={value}
@@ -58,15 +57,17 @@ const JsonEditTable = ({
         ))}
       </table>
 
-      <div
-        onClick={() => {
-          setJsonData((draft) => {
-            draft.push(['', '']);
-          });
-        }}
-        className="w-7 h-7 bg-stone-800 rounded-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
-      >
-        <DrawerIcon.SmallAdd />
+      <div className="flex justify-center py-1">
+        <div
+          onClick={() => {
+            setJsonData((draft) => {
+              draft.push(['', '']);
+            });
+          }}
+          className="w-7 h-7 bg-stone-800 rounded-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+        >
+          <DrawerIcon.SmallAdd />
+        </div>
       </div>
     </div>
   );

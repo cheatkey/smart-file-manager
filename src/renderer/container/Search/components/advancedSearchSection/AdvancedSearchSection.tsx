@@ -15,7 +15,7 @@ const AdvancedSearchSection = ({ isFocused }: IAdvancedSearchSectionProps) => {
 
   const FirstPageJSX = (
     <div className="p-4 flex flex-col">
-      <section className="flex flex-col gap-2 border-b-[1px] pb-4 border-stone-600">
+      <section className="flex flex-col gap-2 border-b-[1px] pb-2 border-stone-600">
         <span className="text-stone-200 font-bold text-lg">Tag</span>
         <div className="flex flex-row gap-2">
           {tagList?.map((tagName) => (
@@ -29,7 +29,7 @@ const AdvancedSearchSection = ({ isFocused }: IAdvancedSearchSectionProps) => {
         </div>
       </section>
 
-      <section className="flex flex-col gap-2 py-4">
+      <section className="flex flex-col gap-2 py-2">
         <span className="text-stone-200 font-bold text-lg">
           Similarity search
         </span>
@@ -60,6 +60,9 @@ const AdvancedSearchSection = ({ isFocused }: IAdvancedSearchSectionProps) => {
   return (
     <ControlPanel
       isFocused={isFocused}
+      uiOption={{
+        yScroll: pageIndex === 0 ? 'hidden' : 'scroll',
+      }}
       pages={[
         FirstPageJSX,
         <FileSelectorTable
