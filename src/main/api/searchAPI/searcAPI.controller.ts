@@ -4,8 +4,9 @@ import {
   getBase64Image,
   getBase64Images,
   getStorePath,
-  intersection,
+  getIntersection,
   ipcFunction,
+  getJsonIntersectionPercentage,
 } from '../utils';
 import isNil from 'lodash/isNil';
 import get from 'lodash/get';
@@ -147,7 +148,7 @@ export class SearchService {
             thumbnails: string[];
           }[]
         >((acc, cur) => {
-          const tagIntersection = intersection(
+          const tagIntersection = getIntersection(
             targetTags,
             cur.tags.map((v) => v.tagName),
           );
@@ -163,6 +164,47 @@ export class SearchService {
             fileName: cur.fileName,
             thumbnails: getBase64Images(cur.thumbnails),
           });
+          return acc;
+        }, [])
+        .sort((a, b) => b.score - a.score);
+    },
+  );
+
+  public findMetadataSimilar = ipcFunction(
+    z.object({
+      id: z.number(),
+    }),
+    async (input) => {
+      const data = await repository.getFile(input.id);
+      if (isNil(data) || isNil(data?.metadata)) {
+        throw new Error('파일이 지정되지 않음');
+      }
+
+      const allFile = await repository.getAllFiles.default();
+
+      return allFile
+        .reduce<
+          {
+            id: number;
+            score: number;
+            fileName: string;
+            thumbnails: string[];
+          }[]
+        >((acc, cur) => {
+          const intersectionPercentage =
+            getJsonIntersectionPercentage(
+              JSON.parse(data.metadata),
+              JSON.parse(cur.metadata),
+            ) * 100;
+
+          if (intersectionPercentage > 0) {
+            acc.push({
+              id: cur.id,
+              score: intersectionPercentage,
+              fileName: cur.fileName,
+              thumbnails: getBase64Images(cur.thumbnails),
+            });
+          }
           return acc;
         }, [])
         .sort((a, b) => b.score - a.score);
@@ -204,7 +246,10 @@ export class SearchService {
       const allFiles = await repository.getAllFiles.default();
 
       const matchedFiles = allFiles.filter((file) => {
-        return get(JSON.parse(file.metadata), input.key) === input.value;
+        return (
+          (get(JSON.parse(file.metadata), input.key) ?? '').trim() ===
+          (input.value ?? '').trim()
+        );
       });
 
       return matchedFiles.map((v) => ({

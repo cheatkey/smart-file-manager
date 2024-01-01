@@ -3,6 +3,8 @@ import { useImmer } from 'use-immer';
 import { useDebounce } from 'react-use';
 import isEqual from 'lodash/isEqual';
 import { DrawerIcon } from '../../../assets/Icon';
+import ResizeInput from './ResizeInput';
+import { useNavigate } from 'react-router-dom';
 
 interface IJsonEditTableProps {
   onDebouncedChange: (payload: Record<string, string>) => void;
@@ -13,6 +15,7 @@ const JsonEditTable = ({
   onDebouncedChange,
   initialValue,
 }: IJsonEditTableProps) => {
+  const navigate = useNavigate();
   const [jsonData, setJsonData] = useImmer<string[][]>(
     Object.entries(initialValue),
   );
@@ -43,15 +46,24 @@ const JsonEditTable = ({
               />
             </td>
             <td className="w-56 border-zinc-700 border-2">
-              <input
-                className="bg-transparent text-stone-50 w-full focus:outline-stone-500"
-                value={value}
-                onChange={(event) => {
-                  setJsonData((draft) => {
-                    draft[index][1] = event.target.value;
-                  });
-                }}
-              />
+              <div className="flex flex-row items-center gap-2">
+                <ResizeInput
+                  value={value}
+                  onChange={(event) => {
+                    setJsonData((draft) => {
+                      draft[index][1] = event.target.value;
+                    });
+                  }}
+                />
+                <div
+                  className="w-6 h-6 bg-stone-800 rounded-lg flex items-center justify-center cursor-pointer"
+                  onClick={() => {
+                    navigate(`/search/metadata/${key}/${value}`);
+                  }}
+                >
+                  <DrawerIcon.RightArrow />
+                </div>
+              </div>
             </td>
           </tr>
         ))}

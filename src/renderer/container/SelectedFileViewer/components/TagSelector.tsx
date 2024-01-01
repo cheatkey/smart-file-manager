@@ -76,7 +76,7 @@ const TagSelector = ({ initialValue, handleChangeTags }: ITagSelectorProps) => {
 
       <div
         onClick={callAddTagModal}
-        className="w-7 h-7 bg-stone-800 rounded-xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
+        className="w-7 h-7 bg-stone-800 rounded-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
       >
         <DrawerIcon.SmallAdd />
       </div>

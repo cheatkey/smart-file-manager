@@ -39,6 +39,7 @@ module.exports = {
     'react/no-unescaped-entities': 'off',
     'import/no-cycle': 'off',
     'no-unsafe-optional-chaining': 'off',
+    'react/destructuring-assignment': 'off',
   },
   parserOptions: {
     ecmaVersion: 2022,

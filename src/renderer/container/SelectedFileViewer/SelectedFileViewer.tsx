@@ -15,7 +15,7 @@ import AddDragFile from './components/AddDragFile';
 import { useNavigate } from 'react-router-dom';
 import Tooltip from '../../components/Tooltip';
 
-const iconWrapper =
+export const iconWrapper =
   'w-11 h-11 bg-stone-800 rounded-2xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform';
 
 interface ISelectedFileViewerProps {}
@@ -163,6 +163,17 @@ const SelectedFileViewer = ({}: ISelectedFileViewerProps) => {
               }}
             >
               <DrawerIcon.SearchMemo />
+            </div>
+          </Tooltip>
+
+          <Tooltip content="메타데이터가 유사한 파일 검색">
+            <div
+              className={iconWrapper}
+              onClick={() => {
+                navigate(`/search/similar/metadata/${fileID}`);
+              }}
+            >
+              <DrawerIcon.SearchSimilarMetadata />
             </div>
           </Tooltip>
 

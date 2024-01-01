@@ -5,6 +5,8 @@ import SearchTagFilesPage from './SearchTag/SearchTagFilesPage';
 import SearchSimilarPage from './SearchSimilar/SearchSimilarPage';
 import SearchTagSimilarPage from './SearchTagSimilar/SearchTagSimilarPage';
 import SearchSimilarMemo from './SearchSimilarMemo/SearchSimilarMemo';
+import SearchMetaDataFilesPage from './SearchMetaData/SearchMetaDataFilesPage';
+import SearchMetadataSimilarPage from './SearchMetadataSimilar/SearchMetadataSimilarPage';
 
 interface ISearchPageProps {}
 
@@ -14,8 +16,17 @@ const SearchPage = ({}: ISearchPageProps) => {
       <SearchInput />
       <Routes>
         <Route path="/tag/:tagName" element={<SearchTagFilesPage />} />
+        <Route
+          path="/metadata/:key/:value"
+          element={<SearchMetaDataFilesPage />}
+        />
+
         <Route path="/similar/thumbnail/:id" element={<SearchSimilarPage />} />
         <Route path="/similar/tag/:id" element={<SearchTagSimilarPage />} />
+        <Route
+          path="/similar/metadata/:id"
+          element={<SearchMetadataSimilarPage />}
+        />
         <Route path="/similar/memo/:id" element={<SearchSimilarMemo />} />
       </Routes>
     </section>

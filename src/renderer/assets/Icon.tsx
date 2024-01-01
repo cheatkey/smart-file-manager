@@ -106,6 +106,37 @@ export const FileViewerIcon = {
 };
 
 export const DrawerIcon = {
+  SearchSimilarMetadata: () => (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill="#e7e5e4"
+        d="M5 2a3 3 0 1 0 3 3a3 3 0 0 0-3-3m7 0a3 3 0 1 0 3 3a3 3 0 0 0-3-3m7 6a3 3 0 1 0-3-3a3 3 0 0 0 3 3M5 9a3 3 0 1 0 3 3a3 3 0 0 0-3-3m7 0a3 3 0 1 0 3 3a3 3 0 0 0-3-3m7 0a3 3 0 1 0 3 3a3 3 0 0 0-3-3M5 16a3 3 0 1 0 3 3a3 3 0 0 0-3-3m7 0a3 3 0 1 0 3 3a3 3 0 0 0-3-3m7 0a3 3 0 1 0 3 3a3 3 0 0 0-3-3"
+      />
+    </svg>
+  ),
+  RightArrow: () => (
+    <svg
+      width="24"
+      height="24 "
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill="#e7e5e4"
+        d="m12.404 8.303l3.431 3.327c.22.213.22.527 0 .74l-6.63 6.43C8.79 19.201 8 18.958 8 18.43v-5.723z"
+      />
+      <path
+        fill="#e7e5e4"
+        d="M8 11.293V5.57c0-.528.79-.771 1.205-.37l2.481 2.406z"
+        opacity=".5"
+      />
+    </svg>
+  ),
   SearchSimilarTags: () => (
     <svg
       width="24"

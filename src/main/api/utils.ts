@@ -95,5 +95,25 @@ export const moveThumbnailImagePath = async (
   return thumbnailFileList;
 };
 
-export const intersection = (a: string[], b: string[]) =>
+export const getIntersection = (a: string[], b: string[]) =>
   a.filter((value) => b.includes(value));
+
+export const getJsonIntersectionPercentage = (
+  a: Record<string, string>,
+  b: Record<string, string>,
+) => {
+  const metadataKeys = [...Object.keys(a), ...Object.keys(b)];
+
+  const intersection = metadataKeys.reduce<number>((acc, key) => {
+    const aValue = (a[key] ?? '').trim();
+    const bValue = (b[key] ?? '').trim();
+    if (aValue.length === 0 && bValue.length === 0) return acc;
+
+    if (aValue === bValue) {
+      return acc + 1;
+    }
+    return acc;
+  }, 0);
+
+  return intersection / metadataKeys.length;
+};
