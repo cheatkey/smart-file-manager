@@ -10,6 +10,7 @@ export const queryKeys = {
     value,
   ],
   getSimilarTags: (id: number | null) => ['getSimilarTags', id],
+  findFilesByQuery: (query: string) => ['findFilesByQuery', query],
   SearchSimilarMemo: (id: number | null) => ['SearchSimilarMemo', id],
   findMetadataSimilar: (id: number | null) => ['findMetadataSimilar', id],
   getRecommendedFileIDList: ['getRecommendedFileIDList'],

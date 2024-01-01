@@ -258,4 +258,26 @@ export class SearchService {
       }));
     },
   );
+
+  findFilesByQuery = ipcFunction(
+    z.object({
+      query: z.string(),
+    }),
+    async (input) => {
+      const allFiles = await repository.getAllFiles.default();
+
+      const matchedFiles = allFiles.filter((file) => {
+        return (
+          file.fileName.includes(input.query) ||
+          file.memo.includes(input.query) ||
+          file.metadata.includes(input.query)
+        );
+      });
+
+      return matchedFiles.map((v) => ({
+        ...omit(v, 'thumbnails'),
+        thumbnails: getBase64Images(v.thumbnails),
+      }));
+    },
+  );
 }

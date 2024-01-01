@@ -28,6 +28,7 @@ const AdvancedSearchSection = ({
             <span
               onClick={() => {
                 navigate(`/search/tag/${tagName}`);
+                setIsFocusd(false);
               }}
               key={tagName}
               className="bg-stone-400 rounded-lg text-xs px-2 py-1 w-fit cursor-pointer"

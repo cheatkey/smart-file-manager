@@ -1,12 +1,16 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useClickAway, useToggle } from 'react-use';
 import AdvancedSearchSection from './advancedSearchSection/AdvancedSearchSection';
+import { useNavigate } from 'react-router-dom';
+import { InputIcon } from '../../../assets/Icon';
 
 interface ISearchInputProps {}
 
 const SearchInput = ({}: ISearchInputProps) => {
+  const [value, setValue] = useState<string>('');
   const [isFocused, setIsFocusd] = useToggle(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useClickAway(wrapperRef, () => {
     setIsFocusd(false);
@@ -16,6 +20,12 @@ const SearchInput = ({}: ISearchInputProps) => {
     <div ref={wrapperRef} className="relative flex flex-col gap-4">
       <div
         onClick={() => setIsFocusd(true)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            navigate(`/search/query/${value}`);
+            setIsFocusd(false);
+          }
+        }}
         className={`rounded-xl h-12 flex flex-row items-center justify-center px-4 gap-2 cursor-pointer transition-all w-[1000px] ${
           isFocused ? 'focused-shadow' : 'default-shadow'
         }`}
@@ -33,7 +43,14 @@ const SearchInput = ({}: ISearchInputProps) => {
             clipRule="evenodd"
           />
         </svg>
-        <input className="w-full h-full bg-transparent text-stone-950 focus:outline-none" />
+        <input
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+          }}
+          className="w-full h-full bg-transparent text-stone-950 focus:outline-none"
+        />
+        <InputIcon.Enter />
       </div>
       <AdvancedSearchSection isFocused={isFocused} setIsFocusd={setIsFocusd} />
     </div>

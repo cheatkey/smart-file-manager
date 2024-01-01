@@ -7,6 +7,7 @@ import SearchTagSimilarPage from './SearchTagSimilar/SearchTagSimilarPage';
 import SearchSimilarMemo from './SearchSimilarMemo/SearchSimilarMemo';
 import SearchMetaDataFilesPage from './SearchMetaData/SearchMetaDataFilesPage';
 import SearchMetadataSimilarPage from './SearchMetadataSimilar/SearchMetadataSimilarPage';
+import SearchQueryPage from './SearchQuery/SearchQueryPage';
 
 interface ISearchPageProps {}
 
@@ -15,6 +16,8 @@ const SearchPage = ({}: ISearchPageProps) => {
     <section className="p-6 w-full flex flex-col gap-9">
       <SearchInput />
       <Routes>
+        <Route path="/query/:query" element={<SearchQueryPage />} />
+
         <Route path="/tag/:tagName" element={<SearchTagFilesPage />} />
         <Route
           path="/metadata/:key/:value"
